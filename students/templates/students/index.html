@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
+        <title>Список учеников</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Список учеников
+            </a>
+        </header>
+
+        <main>
+            <a href="{% url 'students:add' %}">Добавить одного</a>
+            <br />
+            <a href="{% url 'students:add_file' %}">Добавить из файла</a>
+            <h2>Все ученики</h2>
+            {% if students %}
+                <table class="list" style="border: 3px; border-color=black">
+                    <thead>
+                        <td>ID</td>
+                        <td>Фамилия</td>
+                        <td>Имя</td>
+                        <td>Отчество</td>
+                        <td>Класс</td>
+                        <td>Дата рождения</td>
+                    </thead>
+                    {% for user in students %}
+                        <tr class="student_item" onclick="document.location = '{% url 'students:detail' user.id %}'">
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.middle_name }}</td>
+                            <td>{{ user.group }}</td>
+                            <td>{{ user.date_of_birth|date:"d.m.Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Нет учеников.</p>
+            {% endif %}
+        </main>
+    </body>
+</html>

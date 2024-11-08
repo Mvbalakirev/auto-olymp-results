@@ -1,0 +1,52 @@
+html, body {
+    margin: 0px;
+}
+
+main {
+    margin: 8px;
+}
+
+h2 {
+    text-align: center;
+}
+
+.list {
+    width: 100%;
+}
+
+table, tr, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.student_item {
+    cursor: pointer;
+}
+
+.student_item:hover {
+    background-color: rgb(224, 255, 229);
+}
+
+header {
+    width: 100%;
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: #e0ffe5;
+    vertical-align: middle;
+    text-align: center;
+}
+
+header a {
+    display: inline;
+    height: 100%;
+    padding: 8px;
+    vertical-align: bottom;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+header a:hover {
+    background-color: #98ffa9;
+}

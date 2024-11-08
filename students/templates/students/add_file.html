@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
+        <title>Множественное добавление учеников</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Список учеников
+            </a>
+        </header>
+
+        <main>
+            <h2>Добавление учеников</h2>
+            <p>Загрузите заполненный <a href="#">шаблон</a> ниже:</p> 
+            <form action="{% url 'students:add_file_preview' %}" method="post">
+                {% csrf_token %}
+                <input name="file" type="file" accept=".xlsx,.xls" />
+                <input type="submit" value="Загрузить">
+            </form>
+        </main>
+    </body>
+</html>
