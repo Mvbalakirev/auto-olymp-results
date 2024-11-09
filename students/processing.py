@@ -7,7 +7,7 @@ from .models import Student, Group
 
 def get_students_update_lists(request, context):
     data = pd.read_excel(request.FILES['uploaded_students'])
-    data = data.astype('str')
+    data = data.fillna('').astype('str')
     for col in data.columns:
         data[col] = data[col].str.strip(' ')
     students_to_add = []
@@ -37,6 +37,9 @@ def get_students_update_lists(request, context):
         
         if dob == 'NaN' or dob == 'NaT' or dob == '':
             dob = None
+        if middlename == 'NaN' or middlename == 'NaT' or middlename == '':
+            middlename = None
+
 
         try:
             student = Student.objects.get(
