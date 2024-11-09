@@ -24,4 +24,4 @@ class Student(models.Model):
     group = models.ForeignKey(Group, on_delete=models.PROTECT, null=True)
     
     def __str__(self):
-        return self.last_name + ' ' + self.first_name + ' ' + self.middle_name
+        return self.last_name + ' ' + self.first_name + (' ' + self.middle_name if self.middle_name else '')

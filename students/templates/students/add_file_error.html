@@ -4,6 +4,7 @@
         <meta charset="utf-8" />
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
+        <meta http-equiv="refresh" content="3; URL={% url 'students:index' %}" />
         <title>Добавление учеников из файла</title>
     </head>
     <body>
@@ -14,13 +15,7 @@
         </header>
 
         <main>
-            <h2>Добавление учеников</h2>
-            <p>Загрузите заполненный <a href="#">шаблон</a> ниже:</p> 
-            <form action="{% url 'students:add_file_preview' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input name="uploaded_students" type="file" accept=".xlsx,.xls" required />
-                <input type="submit" value="Загрузить">
-            </form>
+            <p>Произошла ошибка!</p>
         </main>
     </body>
 </html>

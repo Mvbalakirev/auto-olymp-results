@@ -17,7 +17,7 @@ def get_students_update_lists(request, context):
     students_to_add_dob = []
     for index, row in data.iterrows():
         lastname, firstname, middlename, group, dob = row
-        if group != '' and group != 'nan':
+        if group != '' and group.lower() != 'nan':
             try:
                 group_num, group_liter = group.split()
                 gr = Group.objects.get(
@@ -29,15 +29,15 @@ def get_students_update_lists(request, context):
                     num=group_num,
                     liter=group_liter
                 )
-                groups_to_add.append({ 'num' : group_num, 'liter' : group_liter})
+                groups_to_add.append([group_num, group_liter])
                 context['groups_to_add'].append({ 'num' : group_num, 'liter' : group_liter})
         else:
             gr = None
-            group = ''
+            group = None
         
-        if dob == 'NaN' or dob == 'NaT' or dob == '':
+        if dob.lower == 'nan' or dob == 'NaT' or dob == '':
             dob = None
-        if middlename == 'NaN' or middlename == 'NaT' or middlename == '':
+        if middlename.lower == 'nan' or middlename == 'NaT' or middlename == '':
             middlename = None
 
 
@@ -49,7 +49,7 @@ def get_students_update_lists(request, context):
                 group=gr
             )
             if student.date_of_birth == None and dob != None:
-                students_to_add_dob.append([student.id, lastname, firstname, middlename, group, dob])
+                students_to_add_dob.append([student.id, dob])
                 context['students_to_add_dob'].append([student.id, lastname, firstname, middlename, gr, date.fromisoformat(dob) if dob else dob])
         except:
             try:
@@ -60,7 +60,7 @@ def get_students_update_lists(request, context):
                     date_of_birth=dob
                 )
                 if str(student.group) != group:
-                    students_to_update_group.append([student.id, lastname, firstname, middlename, str(student.group), dob, group])
+                    students_to_update_group.append([student.id, group])
                     context['students_to_update_group'].append([student.id,
                                                                 lastname,
                                                                 firstname,
@@ -83,15 +83,15 @@ def get_students_update_lists(request, context):
             data[
                 (data['last_name'] == student.last_name) &
                 (data['first_name'] == student.first_name) &
-                (data['middle_name'] == student.middle_name) &
-                (data['group'] == str(student.group))
+                (data['middle_name'] == (student.middle_name if student.middle_name else '')) &
+                (data['group'] == (str(student.group) if student.group else ''))
             ]
         ) == 0 and (student.date_of_birth == None or len(
             data[
                 (data['last_name'] == student.last_name) &
                 (data['first_name'] == student.first_name) &
-                (data['middle_name'] == student.middle_name) &
-                (data['date_of_birth'] == str(student.date_of_birth))
+                (data['middle_name'] == (student.middle_name if student.middle_name else '')) &
+                (data['date_of_birth'] == (str(student.date_of_birth) if student.date_of_birth else ''))
             ]
         ) == 0):
             students_to_delete.append(student.id)
@@ -108,3 +108,66 @@ def get_students_update_lists(request, context):
     request.session['students_to_delete'] = students_to_delete
     request.session['students_to_update_group'] = students_to_update_group
     request.session['students_to_add_dob'] = students_to_add_dob
+
+def save_students_update_lists(request):
+    students_to_add = request.session.get('students_to_add')
+    groups_to_add = request.session.get('groups_to_add')
+    students_to_delete = request.session.get('students_to_delete')
+    students_to_update_group = request.session.get('students_to_update_group')
+    students_to_add_dob = request.session.get('students_to_add_dob')
+
+    # request.session.pop('students_to_add')
+    # request.session.pop('groups_to_add')
+    # request.session.pop('students_to_delete')
+    # request.session.pop('students_to_update_group')
+    # request.session.pop('students_to_add_dob')
+
+    is_delete = False
+    try:
+        if request.POST['is_delete'] == "Yes":
+            is_delete = True
+    except:
+        pass
+
+    newgroups = []
+
+    for num, liter in groups_to_add:
+        newgroups.append(Group(num=num, liter=liter))
+    Group.objects.bulk_create(newgroups)
+
+
+    newstudents = []
+
+    for lastname, firstname, middlename, group, dob in students_to_add:
+        if group:
+            num, liter = group.split()
+            gr = Group.objects.get(num=int(num), liter=liter)
+        else:
+            gr = None
+        newstudents.append(Student(
+            last_name=lastname,
+            first_name=firstname,
+            middle_name=middlename,
+            group=gr,
+            date_of_birth=dob
+        ))
+    Student.objects.bulk_create(newstudents)
+    
+    for id, dob in students_to_add_dob:
+        student = Student.objects.get(pk=id)
+        student.date_of_birth = dob
+        student.save()
+    
+    for id, group in students_to_update_group:
+        if group:
+            num, liter = group.split()
+            gr = Group.objects.get(num=num, liter=liter)
+        else:
+            gr = None
+        student = Student.objects.get(pk=id)
+        student.group = gr
+        student.save()
+    
+    if is_delete:
+        for id in students_to_delete:
+            Student.objects.get(pk=id).delete()

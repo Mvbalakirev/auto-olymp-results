@@ -33,7 +33,11 @@
                             <td>{{ user.id }}</td>
                             <td>{{ user.last_name }}</td>
                             <td>{{ user.first_name }}</td>
-                            <td>{{ user.middle_name }}</td>
+                            <td>
+                                {% if user.middle_name %}
+                                    {{ user.middle_name }}
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if user.group %}
                                     {{ user.group }}

@@ -10,4 +10,6 @@ urlpatterns = [
     path('add/', views.add, name='add'),
     path('add_file/', views.add_file, name='add_file'),
     path('add_file_preview/', views.add_file_preview, name='add_file_preview'),
+    path('add_file_submit/', views.add_file_submit, name='add_file_submit'),
+    path('add_file_error/', views.add_file_error, name='add_file_error'),
 ]

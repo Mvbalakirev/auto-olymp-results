@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
-        <title>Множественное добавление учеников</title>
+        <title>Добавление учеников из файла</title>
     </head>
     <body>
         <header>
@@ -16,6 +16,12 @@
         <main>
             <h2>Добавление учеников</h2>
             {% if groups_to_add or students_to_add or students_to_delete or students_to_add_dob or students_to_update_group %}
+                <form action="{% url 'students:add_file_submit' %}" method="post">
+                    {% csrf_token %}
+                    <label><input type="checkbox" name="is_delete" value="Yes" />Удалять отсутствующих учеников <i>(не рекомендуется)</i></label>
+                    <br /><br />
+                    <input type="submit", value="Применить изменения", style="background-color: #cbffd4; border-color: #bbffc4" />
+                </form>
                 <p>Проверьте корректность изменений ниже:</p>
                 {% if students_to_delete %}
                     <p>Будут <span style="color: red">УДАЛЕНЫ</span> ученики:</p>
@@ -33,7 +39,11 @@
                                 <td>{{ user.id }}</td>
                                 <td>{{ user.last_name }}</td>
                                 <td>{{ user.first_name }}</td>
-                                <td>{{ user.middle_name }}</td>
+                                <td>
+                                    {% if user.middle_name %}
+                                        {{ user.middle_name }}
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if user.group %}
                                         {{ user.group }}
@@ -65,7 +75,11 @@
                                     <td>{{ user.0 }}</td>
                                     <td>{{ user.1 }}</td>
                                     <td>{{ user.2 }}</td>
-                                    <td>{{ user.3 }}</td>
+                                    <td>
+                                        {% if user.3 %}
+                                            {{ user.3 }}
+                                        {% endif %}
+                                    </td>
                                     <td style="background-color: yellow;">
                                         <s>
                                             {% if user.4 %}
@@ -86,7 +100,11 @@
                                     <td>{{ user.0 }}</td>
                                     <td>{{ user.1 }}</td>
                                     <td>{{ user.2 }}</td>
-                                    <td>{{ user.3 }}</td>
+                                    <td>
+                                        {% if user.3 %}
+                                            {{ user.3 }}
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         {% if user.4 %}
                                             {{ user.4 }}
@@ -141,7 +159,11 @@
                                 <td>-</td>
                                 <td>{{ user.0 }}</td>
                                 <td>{{ user.1 }}</td>
-                                <td>{{ user.2 }}</td>
+                                <td>
+                                    {% if user.2 %}
+                                        {{ user.2 }}
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if user.3 %}
                                         {{ user.3 }}
