@@ -25,6 +25,10 @@ def get_students_update_lists(request, context):
                     liter=group_liter
                 )
             except:
+                gr = Group(
+                    num=group_num,
+                    liter=group_liter
+                )
                 groups_to_add.append({ 'num' : group_num, 'liter' : group_liter})
                 context['groups_to_add'].append({ 'num' : group_num, 'liter' : group_liter})
         else:
@@ -43,7 +47,7 @@ def get_students_update_lists(request, context):
             )
             if student.date_of_birth == None and dob != None:
                 students_to_add_dob.append([student.id, lastname, firstname, middlename, group, dob])
-                context['students_to_add_dob'].append([student.id, lastname, firstname, middlename, group if group else '', date.fromisoformat(dob) if dob else dob])
+                context['students_to_add_dob'].append([student.id, lastname, firstname, middlename, gr, date.fromisoformat(dob) if dob else dob])
         except:
             try:
                 student = Student.objects.get(
@@ -58,18 +62,20 @@ def get_students_update_lists(request, context):
                                                                 lastname,
                                                                 firstname,
                                                                 middlename,
-                                                                student.group if student.group else '',
+                                                                student.group,
                                                                 date.fromisoformat(dob) if dob else dob, group])
             except:
                 students_to_add.append([lastname, firstname, middlename, group, dob])
                 context['students_to_add'].append([lastname,
                                                    firstname,
                                                    middlename,
-                                                   group if group else '',
+                                                   gr,
                                                    date.fromisoformat(dob) if dob else dob])
 
 
     for student in Student.objects.all():
+        if student.group and student.group.alumnus == True:
+            continue
         if len(
             data[
                 (data['last_name'] == student.last_name) &
@@ -90,7 +96,7 @@ def get_students_update_lists(request, context):
                                                   'last_name' : student.last_name,
                                                   'first_name' : student.first_name,
                                                   'middle_name' : student.middle_name,
-                                                  'group' : student.group if student.group else '',
+                                                  'group' : student.group,
                                                   'date_of_birth' : student.date_of_birth if student.date_of_birth else ''})
 
 
