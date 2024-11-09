@@ -15,12 +15,123 @@
 
         <main>
             <h2>Добавление учеников</h2>
-            <p>Загрузите заполненный <a href="#">шаблон</a> ниже:</p> 
-            <form action="{% url 'students:add_file_preview' %}" method="post">
-                {% csrf_token %}
-                <input name="file" type="file" accept=".xlsx,.xls" />
-                <input type="submit" value="Загрузить">
-            </form>
+            {% if groups_to_add or students_to_add or students_to_delete or students_to_add_dob or students_to_update_group %}
+                <p>Проверьте корректность изменений ниже:</p>
+                {% if students_to_delete %}
+                    <p>Будут <span style="color: red">УДАЛЕНЫ</span> ученики:</p>
+                    <table class="list">
+                        <thead>
+                            <td>ID</td>
+                            <td>Фамилия</td>
+                            <td>Имя</td>
+                            <td>Отчество</td>
+                            <td>Класс</td>
+                            <td>Дата рождения</td>
+                        </thead>
+                        {% for user in students_to_delete %}
+                            <tr class="student_item_delete">
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.middle_name }}</td>
+                                <td>{{ user.group }}</td>
+                                <td>{{ user.date_of_birth|date:"d.m.Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <br />
+                    <hr />
+                    <br />
+                {% endif %}
+
+                {% if students_to_update_group or students_to_add_dob %}
+                    <p>Будут обновллены данные об учениках:</p>
+                    <table class="list">
+                        <thead>
+                            <td>ID</td>
+                            <td>Фамилия</td>
+                            <td>Имя</td>
+                            <td>Отчество</td>
+                            <td>Класс</td>
+                            <td>Дата рождения</td>
+                        </thead>
+                        {% if students_to_update_group %}
+                            {% for user in students_to_update_group %}
+                                <tr class="student_item_update">
+                                    <td>{{ user.0 }}</td>
+                                    <td>{{ user.1 }}</td>
+                                    <td>{{ user.2 }}</td>
+                                    <td>{{ user.3 }}</td>
+                                    <td style="background-color: yellow;"><s>{{ user.4 }}</s> {{ user.6 }} </td>
+                                    <td>{{ user.5|date:"d.m.Y" }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        {% if students_to_add_dob %}
+                            {% for user in students_to_add_dob %}
+                                <tr class="student_item_update">
+                                    <td>{{ user.0 }}</td>
+                                    <td>{{ user.1 }}</td>
+                                    <td>{{ user.2 }}</td>
+                                    <td>{{ user.3 }}</td>
+                                    <td>{{ user.4 }}</td>
+                                    <td style="background-color: #cbffd4;">{{ user.5|date:"d.m.Y" }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </table>
+                    <br />
+                    <hr />
+                    <br />
+                {% endif %}
+
+                {% if groups_to_add %}
+                    <p>Будут добавлены классы:</p>
+                    <table class="list", style="width: 30%">
+                        <thead>
+                            <td>ID</td>
+                            <td>Параллель</td>
+                            <td>Литера</td>
+                        </thead>
+                        {% for group in groups_to_add %}
+                            <tr class="student_item_add">
+                                <td>-</td>
+                                <td>{{ group.num }}</td>
+                                <td>{{ group.liter }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <br />
+                    <hr />
+                    <br />
+                {% endif %}
+
+                {% if students_to_add %}
+                    <p>Будут добавлены ученики:</p>
+                    <table class="list">
+                        <thead>
+                            <td>ID</td>
+                            <td>Фамилия</td>
+                            <td>Имя</td>
+                            <td>Отчество</td>
+                            <td>Класс</td>
+                            <td>Дата рождения</td>
+                        </thead>
+                        {% for user in students_to_add %}
+                            <tr class="student_item_add">
+                                <td>-</td>
+                                <td>{{ user.0 }}</td>
+                                <td>{{ user.1 }}</td>
+                                <td>{{ user.2 }}</td>
+                                <td>{{ user.3 }}</td>
+                                <td>{{ user.4|date:"d.m.Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            {% else %}
+                <p>Изменений нет.</p>
+            {% endif %}
         </main>
     </body>
 </html>

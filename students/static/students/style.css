@@ -12,6 +12,8 @@ h2 {
 
 .list {
     width: 100%;
+    border: 3px;
+    border-color: black;
 }
 
 table, tr, td {
@@ -24,8 +26,16 @@ table, tr, td {
 }
 
 .student_item:hover {
-    background-color: rgb(224, 255, 229);
+    background-color: #e0ffe5;
 }
+
+.student_item_add {
+    background-color: #cbffd4;
+}
+.student_item_delete {
+    background-color: #ffd4d4;
+}
+
 
 header {
     width: 100%;

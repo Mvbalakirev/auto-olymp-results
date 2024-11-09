@@ -16,9 +16,9 @@
         <main>
             <h2>Добавление учеников</h2>
             <p>Загрузите заполненный <a href="#">шаблон</a> ниже:</p> 
-            <form action="{% url 'students:add_file_preview' %}" method="post">
+            <form action="{% url 'students:add_file_preview' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input name="file" type="file" accept=".xlsx,.xls" />
+                <input name="uploaded_students" type="file" accept=".xlsx,.xls" required />
                 <input type="submit" value="Загрузить">
             </form>
         </main>
