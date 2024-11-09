@@ -9,6 +9,9 @@ class Group(models.Model):
     liter = models.CharField(max_length=2)
     alumnus = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('num', 'liter')
+
     def __str__(self):
         return str(self.num) + ' ' + self.liter
 
