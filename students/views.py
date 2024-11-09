@@ -9,7 +9,7 @@ import pandas as pd
 
 from .models import Student, Group
 
-from .processing import get_students_update_lists, save_students_update_lists
+import students.processing as processing
 
 
 def index(request):
@@ -26,7 +26,12 @@ def edit(request, student_id):
     return HttpResponse(response % student_id)
 
 def add(request):
-    return HttpResponse("All good!")
+    context = { 'groups_list' : Group.objects.filter(alumnus=False)}
+    return render(request, 'students/add.html', context)
+
+def add_submit(request):
+    student = processing.add_student(request)
+    return HttpResponseRedirect(reverse('students:detail', args=(student.id,)))
 
 def add_file(request):
     return render(request, 'students/add_file.html')
@@ -40,17 +45,16 @@ def add_file_preview(request):
         'students_to_add_dob' : [],
     }
     # try:
-    get_students_update_lists(request, context)
+    processing.get_students_update_lists(request, context)
     return render(request, 'students/add_file_preview.html', context)
     # except:
     #     return render(request, 'students/add_file_error.html')
 
 def add_file_submit(request):
     try:
-        save_students_update_lists(request)
+        processing.save_students_update_lists(request)
         return HttpResponseRedirect(reverse('students:index'))
     except:
-        assert False
         return HttpResponseRedirect(reverse('students:add_file_error'))
 
 def add_file_error(request):

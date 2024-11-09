@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
+        <title>Добавление ученика</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Список учеников
+            </a>
+        </header>
+
+        <main>
+            <h2>Добавление ученика</h2>
+            <form action="{% url 'students:add_submit' %}" method="post">
+                {% csrf_token %}
+                <table class="table_form">
+                    <tr>
+                        <td>Фамилия:</td>
+                        <td><input name="last_name" placeholder="Иванов" required /></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Имя:</td>
+                        <td><input name="first_name" placeholder="Иван" required /></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Отчество:</td>
+                        <td><input name="middle_name" placeholder="Иванович" /></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Класс:</td>
+                        <td><input name="group" list="groups_list" placeholder="5 А" /></td>
+                        <td><i>(если класса с данным именем нет, он будет создан)</i></td>
+                        <datalist id="groups_list">
+                            {% if groups_list %}
+                                {% for group in groups_list %}
+                                    <option value="{{group}}"></option>
+                                {% endfor %}
+                            {% endif %}
+                        </datalist>
+                    </tr>
+                    <tr>
+                        <td>Дата рождения:</td>
+                        <td><input type="date" name="date_of_birth" /></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <br />
+                <input type="submit" value="Сохранить">
+            </form>
+        </main>
+    </body>
+</html>

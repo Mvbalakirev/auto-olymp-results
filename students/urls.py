@@ -8,6 +8,7 @@ urlpatterns = [
     path('<int:student_id>/', views.detail, name='detail'),
     path('<int:student_id>/edit', views.edit, name='edit'),
     path('add/', views.add, name='add'),
+    path('add_submit/', views.add_submit, name='add_submit'),
     path('add_file/', views.add_file, name='add_file'),
     path('add_file_preview/', views.add_file_preview, name='add_file_preview'),
     path('add_file_submit/', views.add_file_submit, name='add_file_submit'),

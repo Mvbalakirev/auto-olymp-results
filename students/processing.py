@@ -171,3 +171,24 @@ def save_students_update_lists(request):
     if is_delete:
         for id in students_to_delete:
             Student.objects.get(pk=id).delete()
+
+def add_student(request):
+    try:
+        group_num, group_liter = request.POST['group'].split()
+        try:
+            group = Group.objects.get(num=int(group_num), liter=group_liter)
+        except:
+            group = Group(num=int(group_num), liter=group_liter)
+            group.save()
+    except:
+        group = None
+
+    student = Student(
+        last_name=request.POST['last_name'],
+        first_name=request.POST['first_name'],
+        middle_name=(request.POST['middle_name'] if request.POST['middle_name'] != '' else None),
+        group=group,
+        date_of_birth=(request.POST['date_of_birth'] if request.POST['date_of_birth'] != '' else None),
+    )
+    student.save()
+    return student
