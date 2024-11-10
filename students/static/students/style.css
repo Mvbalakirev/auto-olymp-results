@@ -69,3 +69,13 @@ header a:hover {
 .table_form, .table_form tr, .table_form tr td {
     border: none !important;
 }
+
+.fio {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.student_info p {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}

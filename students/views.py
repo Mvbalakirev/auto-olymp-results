@@ -22,8 +22,18 @@ def detail(request, student_id):
     return render(request, 'students/detail.html', {'student': student})
 
 def edit(request, student_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % student_id)
+    student = get_object_or_404(Student, pk=student_id)
+    context = {
+        'student' : student,
+        'groups_list' : Group.objects.filter(alumnus=False)
+    }
+    return render(request, 'students/edit.html', context)
+
+def edit_submit(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    processing.edit_student(request, student)
+    return HttpResponseRedirect(reverse('students:detail', args=(student_id,)))
+
 
 def add(request):
     context = { 'groups_list' : Group.objects.filter(alumnus=False)}
@@ -44,11 +54,11 @@ def add_file_preview(request):
         'students_to_update_group' : [],
         'students_to_add_dob' : [],
     }
-    # try:
-    processing.get_students_update_lists(request, context)
-    return render(request, 'students/add_file_preview.html', context)
-    # except:
-    #     return render(request, 'students/add_file_error.html')
+    try:
+        processing.get_students_update_lists(request, context)
+        return render(request, 'students/add_file_preview.html', context)
+    except:
+        return render(request, 'students/add_file_error.html')
 
 def add_file_submit(request):
     try:

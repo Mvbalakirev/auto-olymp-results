@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
-        <title>Добавление ученика</title>
+        <title>{{ student }} | Редактирование</title>
     </head>
     <body>
         <header>
@@ -14,28 +14,28 @@
         </header>
 
         <main>
-            <h2>Добавление ученика</h2>
-            <form action="{% url 'students:add_submit' %}" method="post">
+            <h2>Редактирование ученика</h2>
+            <form action="{% url 'students:edit_submit' student.id %}" method="post">
                 {% csrf_token %}
                 <table class="table_form">
                     <tr>
                         <td>Фамилия:</td>
-                        <td><input name="last_name" placeholder="Иванов" required /></td>
+                        <td><input name="last_name" value="{{ student.last_name }}" required /></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>Имя:</td>
-                        <td><input name="first_name" placeholder="Иван" required /></td>
+                        <td><input name="first_name" value="{{ student.first_name }}" required /></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>Отчество:</td>
-                        <td><input name="middle_name" placeholder="Иванович" /></td>
+                        <td><input name="middle_name" value="{% if student.middle_name %}{{ student.middle_name }}{% endif %}" /></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>Класс:</td>
-                        <td><input name="group" list="groups_list" placeholder="5 А" /></td>
+                        <td><input name="group" list="groups_list" value="{% if student.group %}{{ student.group }}{% endif %}" /></td>
                         <td><i>(если класса с данным именем нет, он будет создан)</i></td>
                         <datalist id="groups_list">
                             {% if groups_list %}
@@ -47,7 +47,7 @@
                     </tr>
                     <tr>
                         <td>Дата рождения:</td>
-                        <td><input type="date" name="date_of_birth" /></td>
+                        <td><input type="date" name="date_of_birth" value="{% if student.date_of_birth %}{{ student.date_of_birth|date:"Y-m-d" }}{% endif %}" /></td>
                         <td></td>
                     </tr>
                 </table>

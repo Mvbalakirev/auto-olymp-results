@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
+        <title>{{ student }}</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Список учеников
+            </a>
+        </header>
+
+        <main>
+            <h2>Информация об ученике</h2>
+                <a href="{% url 'students:edit' student.id %}">Редактировать</a>
+                <div class="student_info">
+                    <p class="fio">{{ student.last_name }} {{ student.first_name }}{% if student.middle_name %} {{ student.middle_name }}{% endif %}</p>
+                    <p>
+                        {% if student.group %}
+                            {{ student.group }}
+                        {% else %}
+                            <i>Класс не назначен</i>
+                        {% endif %}
+                    </p>
+                    <p>
+                        {% if student.date_of_birth %}
+                            {{ student.date_of_birth|date:"d.m.Y" }}
+                        {% else %}
+                            <i>Дата рождения не указана</i>
+                        {% endif %}
+                    </p>
+                <div>
+            </form>
+        </main>
+    </body>
+</html>

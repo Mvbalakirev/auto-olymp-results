@@ -4,6 +4,7 @@ from django.utils import timezone
 import pandas as pd
 
 from .models import Student, Group
+from django.shortcuts import get_object_or_404
 
 def get_students_update_lists(request, context):
     data = pd.read_excel(request.FILES['uploaded_students'])
@@ -174,7 +175,7 @@ def save_students_update_lists(request):
 
 def add_student(request):
     try:
-        group_num, group_liter = request.POST['group'].split()
+        group_num, group_liter = request.POST['group'].strip(' ').split()
         try:
             group = Group.objects.get(num=int(group_num), liter=group_liter)
         except:
@@ -184,11 +185,29 @@ def add_student(request):
         group = None
 
     student = Student(
-        last_name=request.POST['last_name'],
-        first_name=request.POST['first_name'],
-        middle_name=(request.POST['middle_name'] if request.POST['middle_name'] != '' else None),
+        last_name=request.POST['last_name'].strip(' '),
+        first_name=request.POST['first_name'].strip(' '),
+        middle_name=(request.POST['middle_name'].strip(' ') if request.POST['middle_name'] != '' else None),
         group=group,
-        date_of_birth=(request.POST['date_of_birth'] if request.POST['date_of_birth'] != '' else None),
+        date_of_birth=(request.POST['date_of_birth'].strip(' ') if request.POST['date_of_birth'] != '' else None),
     )
     student.save()
     return student
+
+def edit_student(request, student):
+    try:
+        group_num, group_liter = request.POST['group'].strip(' ').split()
+        try:
+            group = Group.objects.get(num=int(group_num), liter=group_liter)
+        except:
+            group = Group(num=int(group_num), liter=group_liter)
+            group.save()
+    except:
+        group = None
+    
+    student.last_name = request.POST['last_name'].strip(' ')
+    student.first_name = request.POST['first_name'].strip(' ')
+    student.middle_name = (request.POST['middle_name'].strip(' ') if request.POST['middle_name'] != '' else None)
+    student.group = group
+    student.date_of_birth = (request.POST['date_of_birth'].strip(' ') if request.POST['date_of_birth'] != '' else None)
+    student.save()
