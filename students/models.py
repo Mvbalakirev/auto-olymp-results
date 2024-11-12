@@ -9,13 +9,14 @@ class Group(models.Model):
     liter = models.CharField("Литера", max_length=2)
     alumnus = models.BooleanField("Выпустился", default=False)
 
+    def __str__(self):
+        return str(self.num) + ' ' + self.liter
+    
     class Meta:
         unique_together = ('num', 'liter')
         verbose_name = 'класс'
         verbose_name_plural = 'классы'
-
-    def __str__(self):
-        return str(self.num) + ' ' + self.liter
+        ordering = ['num', 'liter']
 
 
 class Student(models.Model):
