@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Group, Student
 
 
-@admin.action(description="Reset group")
+@admin.action(description="Сбросить класс")
 def reset_group(modeladmin, request, queryset):
     queryset.update(group=None)
 
