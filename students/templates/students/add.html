@@ -3,18 +3,22 @@
     <head>
         <meta charset="utf-8" />
         {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
         <title>Добавление ученика</title>
     </head>
     <body>
         <header>
             <a href="{% url 'students:index' %}">
-                Список учеников
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
             </a>
         </header>
 
         <main>
-            <h2>Добавление ученика</h2>
+            <h2 class="head_title">Добавление ученика</h2>
             <form action="{% url 'students:add_submit' %}" method="post">
                 {% csrf_token %}
                 <table class="table_form">

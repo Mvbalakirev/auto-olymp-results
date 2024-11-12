@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
+        <title>Олимпиады</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <h2 class="head_title">Все олимпиады</h2>
+            {% if olymps %}
+                <table class="list">
+                    <thead>
+                        <td>ID</td>
+                        <td>Название</td>
+                        <td>Год</td>
+                    </thead>
+                    {% for olymp in olymps %}
+                        <tr class="list_item" onclick="document.location = '{% url 'students:detail' olymp.id %}'">
+                            <td>{{ olymp.id }}</td>
+                            <td>{{ olymp.name }}</td>
+                            <td>{{ olymp.year }}/{{ olymp.year|add:1 }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Нет олимпиад.</p>
+            {% endif %}
+        </main>
+    </body>
+</html>

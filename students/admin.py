@@ -19,7 +19,7 @@ class StudentAdmin(admin.ModelAdmin):
 def to_next_year(modeladmin, request, queryset):
     for group in queryset:
         group.num += 1
-    queryset.save()
+        group.save()
 
 class GroupAdmin(admin.ModelAdmin):
     search_fields = ['num', 'liter']

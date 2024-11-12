@@ -3,13 +3,17 @@
     <head>
         <meta charset="utf-8" />
         {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
-        <title>Список учеников</title>
+        <title>Ученики</title>
     </head>
     <body>
         <header>
             <a href="{% url 'students:index' %}">
-                Список учеников
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
             </a>
         </header>
 
@@ -17,7 +21,7 @@
             <a href="{% url 'students:add' %}">Добавить одного</a>
             <br />
             <a href="{% url 'students:add_file' %}">Добавить из файла</a>
-            <h2>Все ученики</h2>
+            <h2 class="head_title">Все ученики</h2>
             {% if students %}
                 <table class="list">
                     <thead>
@@ -29,7 +33,7 @@
                         <td>Дата рождения</td>
                     </thead>
                     {% for user in students %}
-                        <tr class="student_item" onclick="document.location = '{% url 'students:detail' user.id %}'">
+                        <tr class="list_item" onclick="document.location = '{% url 'students:detail' user.id %}'">
                             <td>{{ user.id }}</td>
                             <td>{{ user.last_name }}</td>
                             <td>{{ user.first_name }}</td>

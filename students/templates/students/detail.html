@@ -3,19 +3,23 @@
     <head>
         <meta charset="utf-8" />
         {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
         <title>{{ student }}</title>
     </head>
     <body>
         <header>
             <a href="{% url 'students:index' %}">
-                Список учеников
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
             </a>
         </header>
 
         <main>
             <a href="{% url 'students:edit' student.id %}">Редактировать</a>
-            <h2>Информация об ученике</h2>
+            <h2 class="head_title">Информация об ученике</h2>
                 <div class="student_info">
                     <p class="fio">{{ student.last_name }} {{ student.first_name }}{% if student.middle_name %} {{ student.middle_name }}{% endif %}</p>
                     <p>
