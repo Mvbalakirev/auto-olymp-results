@@ -15,7 +15,7 @@ class Subject(models.Model):
 
 class Olymp(models.Model):
     name = models.CharField('Название', max_length=255)
-    year = models.IntegerField('Год')
+    year = models.IntegerField('Год', help_text="Укажите первый год учебного года")
 
     def __str__(self):
         return self.name + ' ' + str(self.year) + '/' + str(self.year + 1)
@@ -35,7 +35,6 @@ class OlympStage(models.Model):
     class Meta:
         verbose_name = 'этап'
         verbose_name_plural = 'этапы'
-        unique_together = ('olymp', 'num')
 
 class OlympStageSubject(models.Model):
     olymp_stage = models.ForeignKey(OlympStage, on_delete=models.PROTECT, verbose_name='Этап')

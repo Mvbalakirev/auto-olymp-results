@@ -20,24 +20,23 @@
         <main>
             <a href="{% url 'students:edit' student.id %}">Редактировать</a>
             <h2 class="head_title">Информация об ученике</h2>
-                <div class="student_info">
-                    <p class="fio">{{ student.last_name }} {{ student.first_name }}{% if student.middle_name %} {{ student.middle_name }}{% endif %}</p>
-                    <p>
-                        {% if student.group %}
-                            {{ student.group }}
-                        {% else %}
-                            <i>Класс не назначен</i>
-                        {% endif %}
-                    </p>
-                    <p>
-                        {% if student.date_of_birth %}
-                            {{ student.date_of_birth|date:"d.m.Y" }}
-                        {% else %}
-                            <i>Дата рождения не указана</i>
-                        {% endif %}
-                    </p>
-                <div>
-            </form>
+            <div class="student_info">
+                <p class="fio">{{ student.last_name }} {{ student.first_name }}{% if student.middle_name %} {{ student.middle_name }}{% endif %}</p>
+                <p>
+                    {% if student.group %}
+                        {{ student.group }}
+                    {% else %}
+                        <i>Класс не назначен</i>
+                    {% endif %}
+                </p>
+                <p>
+                    {% if student.date_of_birth %}
+                        {{ student.date_of_birth|date:"d.m.Y" }}
+                    {% else %}
+                        <i>Дата рождения не указана</i>
+                    {% endif %}
+                </p>
+            <div>
         </main>
     </body>
 </html>

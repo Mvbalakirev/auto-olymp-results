@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ olymp }}</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <a href="{% url 'olymps:edit' olymp.id %}">Редактировать</a>
+            <h2 class="head_title">{{ olymp }}</h2>
+            <h3>Этапы</h3>
+            {% if stages %}
+            <table class="list">
+                <thead>
+                    <tr>
+                        <td class="id_column">ID</td>
+                        <td class="id_column">Номер</td>
+                        <td>Название</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stage in stages %}
+                        <tr class="list_item" onclick="document.location = '{% url 'olymps:detail' stage.id %}'">
+                            <td class="id_column">{{ stage.id }}</td>
+                            <td class="id_column">{{ stage.num }}</td>
+                            <td>{{ stage.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                Этапов ещё нет.
+            {% endif %}
+        </main>
+    </body>
+</html>

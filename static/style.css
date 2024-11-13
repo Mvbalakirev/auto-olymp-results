@@ -69,3 +69,11 @@ header a:hover {
 .list_item_delete {
     background-color: #ffd4d4;
 }
+
+.id_column {
+    width: 80px;
+}
+
+td.form_input_table input {
+    width: calc(100% - 7px);
+}
