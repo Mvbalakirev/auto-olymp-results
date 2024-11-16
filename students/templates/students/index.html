@@ -18,9 +18,9 @@
         </header>
 
         <main>
-            <a href="{% url 'students:add' %}">Добавить одного</a>
+            <a href="{% url 'students:add' %}"><button>Добавить одного</button></a>
             <br />
-            <a href="{% url 'students:add_file' %}">Добавить из файла</a>
+            <a href="{% url 'students:add_file' %}"><button>Добавить из файла</button></a>
             <h2 class="head_title">Все ученики</h2>
             {% if students %}
                 <table class="list">

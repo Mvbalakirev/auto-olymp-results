@@ -37,7 +37,7 @@
                     <thead>
                         <tr>
                             <td style="display:none">ID</td>
-                            <td class="id_column">Порядок</td>
+                            <td class="id_column">Номер</td>
                             <td>Название</td>
                         </tr>
                     </thead>
@@ -47,7 +47,7 @@
                             <tr>
                                 <td style="display:none">{{f.id}}</td>
                                 <td class="id_column form_input_table">{{f.num}}</td>
-                                <td class="form_input_table">{{f.instance.name}}</td>
+                                <td class="form_input_table"><a href="#">{{f.instance.name}}</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>

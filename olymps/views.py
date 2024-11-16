@@ -18,7 +18,7 @@ def index(request):
 
 def detail(request, olymp_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
-    stages = OlympStage.objects.filter(olymp=olymp).order_by('num')
+    stages = olymp.olympstage_set.all().order_by('num')
     context = {
         'olymp' : olymp,
         'stages' : stages
@@ -27,7 +27,7 @@ def detail(request, olymp_id):
 
 def edit(request, olymp_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
-    stages = OlympStage.objects.filter(olymp=olymp).order_by('num')
+    stages = olymp.olympstage_set.all().order_by('num')
     context = {
         'olymp' : olymp,
         'stages' : stages,
@@ -48,8 +48,18 @@ def edit(request, olymp_id):
 
     return render(request, 'olymps/edit.html', context)
 
-def stage_add(request, stage_id):
-    return HttpResponse('')
+def stage_add(request, olymp_id):
+    return HttpResponse('wer')
+
+def stage_detail(request, olymp_id, stage_num):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, num=stage_num)
+    subjects = stage.olympstagesubject_set.all().order_by('subject__name')
+    context = {
+        'stage' : stage,
+        'stage_subjects' : subjects
+    }
+    return render(request, 'olymps/stage/detail.html', context)
 
 def stage_delete(request, stage_id):
     if request.method == 'POST':

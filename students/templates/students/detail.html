@@ -18,7 +18,7 @@
         </header>
 
         <main>
-            <a href="{% url 'students:edit' student.id %}">Редактировать</a>
+            <a href="{% url 'students:edit' student.id %}"><button>Редактировать</button></a>
             <h2 class="head_title">Информация об ученике</h2>
             <div class="student_info">
                 <p class="fio">{{ student.last_name }} {{ student.first_name }}{% if student.middle_name %} {{ student.middle_name }}{% endif %}</p>
