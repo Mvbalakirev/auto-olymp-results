@@ -5,7 +5,7 @@
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
-        <title>{{ olymp }}</title>
+        <title>{{ subject }}</title>
     </head>
     <body>
         <header>
@@ -18,8 +18,7 @@
         </header>
 
         <main>
-            <a href="{% url 'olymps:stage_edit' stage.olymp.id stage.id %}"><button>Редактировать</button></a>
-            <a href="{% url 'olymps:stage_subject_add' stage.olymp.id stage.id %}"><button>Добавить предмет</button></a>
+            <a href="{% url 'olymps:stage_edit' stage.olymp.id stage.id subject.id %}"><button>Редактировать</button></a>
             <h2 class="head_title">{{ stage.olymp }}</h2>
             <h3 class="head_title">{{ stage.name }}</h3>
             <h3>Предметы</h3>

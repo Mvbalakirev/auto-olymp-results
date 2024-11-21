@@ -5,7 +5,7 @@
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
-        <title>{{ olymp }} | Редактирование</title>
+        <title>{{ stage }} | Редактирование</title>
     </head>
     <body>
         <header>
@@ -18,11 +18,11 @@
         </header>
 
         <main>
-            <form method="post" action="{% url 'olymps:delete' olymp.id %}">
+            <form method="post" action="{% url 'olymps:stage_delete' olymp.id stage.id %}">
                 {% csrf_token %}
                 <input class="del_button" type="submit" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить?\nДля этого у объекта не должно быть зависимых.')">
             </form>
-            <h2 class="head_title">Редактирование олимпиады</h2>
+            <h2 class="head_title">Редактирование этапа</h2>
             <form method="post" action="#">
                 {% csrf_token %}
                 <table>
@@ -36,21 +36,25 @@
                     </tbody>
                 </table>
                 <br />
-                <h3>Изменить порядок этапов</h3>
+                <h3>Изменить предметы</h3>
                 <table class="list">
                     <thead>
                         <tr>
-                            <td class="id_column">Номер</td>
-                            <td>Название</td>
+                            <td>Предмет</td>
+                            <td>Мин. кл.</td>
+                            <td>Макс. кл.</td>
+                            <td>Дата</td>
                         </tr>
                     </thead>
                     <tbody>
-                        {{ form_stage.management_form }}
-                        {% for f in form_stage %}
+                        {{ form_subject.management_form }}
+                        {% for f in form_subject %}
                             <tr>
                                 {{f.id}}
-                                <td class="id_column form_input_table">{{f.num}}</td>
-                                <td class="form_input_table">{{f.instance.name}}</td>
+                                <td class="form_input_table">{{f.instance.subject.name}}</td>
+                                <td class="id_column form_input_table">{{f.min_class}}</td>
+                                <td class="id_column form_input_table">{{f.max_class}}</td>
+                                <td class="id_column form_input_table">{{f.date}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

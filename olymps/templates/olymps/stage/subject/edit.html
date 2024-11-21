@@ -4,8 +4,8 @@
         <meta charset="utf-8" />
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
-        <title>Создание олимипады</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ stage_subject }} | Редактирование предмета</title>
     </head>
     <body>
         <header>
@@ -18,7 +18,11 @@
         </header>
 
         <main>
-            <h2 class="head_title">Создание олимпиады</h2>
+            <form method="post" action="{% url 'olymps:stage_subject_delete' olymp.id stage.id stage_subject.id %}">
+                {% csrf_token %}
+                <input class="del_button" type="submit" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить?\nДля этого у объекта не должно быть зависимых.')">
+            </form>
+            <h2 class="head_title">Редактирование предмета</h2>
             <form method="post" action="#">
                 {% csrf_token %}
                 <table>

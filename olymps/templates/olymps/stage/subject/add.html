@@ -5,7 +5,7 @@
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
-        <title>Создание олимипады</title>
+        <title>{{ stage }} | Добавление предмета</title>
     </head>
     <body>
         <header>
@@ -18,7 +18,7 @@
         </header>
 
         <main>
-            <h2 class="head_title">Создание олимпиады</h2>
+            <h2 class="head_title">Добавление предмета</h2>
             <form method="post" action="#">
                 {% csrf_token %}
                 <table>

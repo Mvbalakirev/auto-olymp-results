@@ -19,6 +19,7 @@
 
         <main>
             <a href="{% url 'olymps:edit' olymp.id %}"><button>Редактировать</button></a>
+            <a href="{% url 'olymps:stage_add' olymp.id %}"><button>Добавить этап</button></a>
             <h2 class="head_title">{{ olymp }}</h2>
             <h3>Этапы</h3>
             {% if stages %}
@@ -32,7 +33,7 @@
                 </thead>
                 <tbody>
                     {% for stage in stages %}
-                        <tr class="list_item" onclick="document.location = '{% url 'olymps:stage_detail' stage.olymp.id stage.num   %}'">
+                        <tr class="list_item" onclick="document.location = '{% url 'olymps:stage_detail' stage.olymp.id stage.id %}'">
                             <td class="id_column">{{ stage.id }}</td>
                             <td class="id_column">{{ stage.num }}</td>
                             <td>{{ stage.name }}</td>

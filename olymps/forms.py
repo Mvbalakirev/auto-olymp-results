@@ -1,4 +1,5 @@
 import django.forms as forms
+import formset.widgets
 from django.core.exceptions import ValidationError
 
 from olymps.models import *
@@ -10,19 +11,27 @@ class OlympForm(forms.ModelForm):
         fields = ['name', 'year']
 
 
-class BaseStageFormSet(forms.BaseModelFormSet):
-    def clean(self):
-        if any(self.errors):
-            return
-        nums = set()
-        for form in self.forms:
-            if self.can_delete and self._should_delete_form(form):
-                continue
-            num = form.cleaned_data.get("num")
-            if not num:
-                raise ValidationError("Оставлен пустой номер этапа")
-            if num in nums:
-                raise ValidationError("Все номера этапов должны быть разными")
-            nums.add(num)
+OlympStageFormset = forms.modelformset_factory(OlympStage, fields=['id', 'num'], extra=0, can_delete=False)
 
-OlympStageFormset = forms.modelformset_factory(OlympStage, fields=['id', 'num'], extra=0, formset=BaseStageFormSet)
+
+class StageForm(forms.ModelForm):
+    class Meta:
+        model = OlympStage
+        fields = ['olymp', 'name', 'num']
+
+class StageSubjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["date"].widget = formset.widgets.DateInput()
+    class Meta:
+        model = OlympStageSubject
+        fields=['stage', 'subject', 'min_class', 'max_class', 'date']
+
+
+StageSubjectsFormset = forms.modelformset_factory(
+    OlympStageSubject,
+    StageSubjectForm,
+    fields=['id', 'min_class', 'max_class', 'date'],
+    extra=0,
+    can_delete=False
+)

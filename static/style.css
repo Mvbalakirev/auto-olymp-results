@@ -23,7 +23,7 @@ table.list, table.list tr, table.list tr td {
 
 table.list thead {
     font-weight: bold;
-    font-size: larger;
+    font-size: large;
 }
 
 header {
@@ -76,4 +76,10 @@ header a:hover {
 
 td.form_input_table input {
     width: calc(100% - 7px);
+}
+
+.del_button {
+    color: white;
+    background-color: red;
+    border-color: red;
 }
