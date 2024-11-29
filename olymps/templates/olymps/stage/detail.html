@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                     {% for stage_subject in stage_subjects %}
-                        <tr class="list_item" onclick="document.location = '{% url 'olymps:stage_detail' stage.olymp.id stage.id  %}'">
+                        <tr class="list_item" onclick="document.location = '{% url 'olymps:stage_subject_detail' stage.olymp.id stage.id stage_subject.id %}'">
                             <td class="id_column">{{ stage_subject.id }}</td>
                             <td>{{ stage_subject.subject }}</td>
                             <td>{{ stage_subject.min_class }}-{{ stage_subject.max_class }}</td>

@@ -36,9 +36,9 @@ def get_students_update_lists(request, context):
             gr = None
             group = None
         
-        if dob.lower == 'nan' or dob == 'NaT' or dob == '':
+        if dob.lower() == 'nan' or dob.lower() == 'nat' or dob == '':
             dob = None
-        if middlename.lower == 'nan' or middlename == 'NaT' or middlename == '':
+        if middlename.lower() == 'nan' or middlename.lower() == 'nat' or middlename == '':
             middlename = None
 
 

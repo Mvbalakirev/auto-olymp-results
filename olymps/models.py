@@ -37,14 +37,14 @@ class OlympStage(models.Model):
         verbose_name_plural = 'этапы'
 
 class OlympStageSubject(models.Model):
-    stage = models.ForeignKey(OlympStage, on_delete=models.PROTECT, verbose_name='Этап')
+    stage = models.ForeignKey(OlympStage, on_delete=models.CASCADE, verbose_name='Этап')
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT, verbose_name='Предмет')
-    date = models.DateField('Дата проведения', null=True, blank=True)
     min_class = models.IntegerField('Минимальный класс')
     max_class = models.IntegerField('Максимальный класс')
+    date = models.DateField('Дата проведения', null=True, blank=True)
 
     def __str__(self):
-        return self.stage + ' | ' + self.subject.name
+        return str(self.stage) + ' | ' + self.subject.name
     
     class Meta:
         verbose_name = 'предмет этапа'

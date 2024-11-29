@@ -20,6 +20,7 @@
         <main>
             <a href="{% url 'olymps:edit' olymp.id %}"><button>Редактировать</button></a>
             <a href="{% url 'olymps:stage_add' olymp.id %}"><button>Добавить этап</button></a>
+            <a href="{% url 'olymps:stage_add_file' olymp.id %}"><button>Добавить этапы из файла</button></a>
             <h2 class="head_title">{{ olymp }}</h2>
             <h3>Этапы</h3>
             {% if stages %}

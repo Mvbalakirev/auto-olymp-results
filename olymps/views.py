@@ -10,6 +10,7 @@ import pandas as pd
 from students.models import Student, Group
 from .models import Olymp, OlympStage, OlympStageSubject
 from .forms import *
+import olymps.processing as processing
 
 def index(request):
     olymps_list = Olymp.objects.all()
@@ -46,7 +47,7 @@ def edit(request, olymp_id):
             except:
                 return HttpResponse("Произошла ошибка")
         else:
-            return HttpResponse("Произошла ошибка")
+            return HttpResponse("Данные некорректны")
 
     return render(request, 'olymps/edit.html', context)
 
@@ -72,7 +73,7 @@ def add(request):
             except:
                 return HttpResponse("Произошла ошибка")
         else:
-            return HttpResponse("Произошла ошибка")
+            return HttpResponse("Данные некорректны")
     else:
         context = {
             'form' : OlympForm(),
@@ -102,7 +103,7 @@ def stage_add(request, olymp_id):
             except:
                 return HttpResponse("Произошла ошибка")
         else:
-            return HttpResponse("Произошла ошибка")
+            return HttpResponse("Данные некорректны")
     else:
         olymp = get_object_or_404(Olymp, pk=olymp_id)
         context = {
@@ -111,10 +112,27 @@ def stage_add(request, olymp_id):
         }
         return render(request, 'olymps/stage/add.html', context)
 
+
+def stage_add_file(request, olymp_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    if request.method == "POST":
+        # try:
+        f = request.FILES['file']
+        processing.stages_file(f, olymp)
+        return HttpResponseRedirect(reverse('olymps:detail', args=(olymp.id,)))
+        # except:
+        #     return HttpResponse("Произошла ошибка")
+    else:
+        olymp = get_object_or_404(Olymp, pk=olymp_id)
+        context = {
+            'olymp' : olymp,
+        }
+        return render(request, 'olymps/stage/add_file.html', context)
+
 def stage_detail(request, olymp_id, stage_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
-    subjects = stage.olympstagesubject_set.all().order_by('date')
+    subjects = stage.olympstagesubject_set.all().order_by('-date', 'subject__name')
     context = {
         'stage' : stage,
         'stage_subjects' : subjects
@@ -124,7 +142,7 @@ def stage_detail(request, olymp_id, stage_id):
 def stage_edit(request, olymp_id, stage_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
-    subjects = stage.olympstagesubject_set.all().order_by('date')
+    subjects = stage.olympstagesubject_set.all().order_by('subject__name')
     
     context = {
         'olymp' : olymp,
@@ -145,7 +163,7 @@ def stage_edit(request, olymp_id, stage_id):
             except:
                 return HttpResponse("Произошла ошибка")
         else:
-            return HttpResponse("Произошла ошибка")
+            return HttpResponse("Данные некорректны")
 
     return render(request, 'olymps/stage/edit.html', context)
 
@@ -166,13 +184,13 @@ def stage_subject_add(request, olymp_id, stage_id):
     if request.method == "POST":
         form = StageSubjectForm(request.POST)
         if form.is_valid():
-            # try:
-            stage_subject = form.save(commit=True)
-            return HttpResponseRedirect(reverse('olymps:stage_detail', args=(stage_subject.stage.olymp.id, stage_subject.stage.id)))
-            # except:
-            return HttpResponse("Произошла ошибка")
+            try:
+                stage_subject = form.save(commit=True)
+                return HttpResponseRedirect(reverse('olymps:stage_detail', args=(stage_subject.stage.olymp.id, stage_subject.stage.id)))
+            except:
+                return HttpResponse("Произошла ошибка")
         else:
-            return HttpResponse("Произошла ошибка")
+            return HttpResponse("Данные некорректны")
     else:
         olymp = get_object_or_404(Olymp, pk=olymp_id)
         stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
@@ -182,3 +200,51 @@ def stage_subject_add(request, olymp_id, stage_id):
             'form' : StageSubjectForm(instance=OlympStageSubject(stage=stage)),
         }
         return render(request, 'olymps/stage/subject/add.html', context)
+
+
+def stage_subject_edit(request, olymp_id, stage_id, stage_subject_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    if request.method == "POST":
+        form = StageSubjectForm(request.POST, instance=subject)
+        if form.is_valid():
+            try:
+                stage_subject = form.save(commit=True)
+                return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(stage_subject.stage.olymp.id, stage_subject.stage.id, stage_subject.id)))
+            except:
+                return HttpResponse("Произошла ошибка")
+        else:
+            return HttpResponse("Данные некорректны")
+    else:
+        olymp = get_object_or_404(Olymp, pk=olymp_id)
+        stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+        context = {
+            'subject' : subject,
+            'form' : StageSubjectForm(instance=subject),
+        }
+        return render(request, 'olymps/stage/subject/edit.html', context)
+
+
+def stage_subject_delete(request, olymp_id, stage_id, stage_subject_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    if request.method == 'POST':
+        try:
+            subject.delete()
+            return HttpResponseRedirect(reverse('olymps:stage_detail', args=(olymp_id, stage_id)))
+        except:
+            return HttpResponse('Произошла ошибка')
+    else:
+        return HttpResponse('Некорректный метод запроса')
+
+
+def stage_subject_detail(request, olymp_id, stage_id, stage_subject_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    context = {
+        'subject' : subject,
+    }
+    return render(request, 'olymps/stage/subject/detail.html', context)

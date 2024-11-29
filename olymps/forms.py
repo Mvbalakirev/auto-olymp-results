@@ -25,7 +25,7 @@ class StageSubjectForm(forms.ModelForm):
         self.fields["date"].widget = formset.widgets.DateInput()
     class Meta:
         model = OlympStageSubject
-        fields=['stage', 'subject', 'min_class', 'max_class', 'date']
+        fields=['id', 'stage', 'subject', 'min_class', 'max_class', 'date']
 
 
 StageSubjectsFormset = forms.modelformset_factory(
