@@ -50,3 +50,14 @@ class OlympStageSubject(models.Model):
         verbose_name = 'предмет этапа'
         verbose_name_plural = 'предметы этапа'
         unique_together = ('stage', 'subject')
+
+class Grade(models.Model):
+    stage_subject = models.ForeignKey(OlympStageSubject, on_delete=models.CASCADE, verbose_name='Предмет')
+    group_num = models.IntegerField('Класс')
+    gold = models.FloatField('Победитель', null=True, blank=True)
+    silver = models.FloatField('Призёр', null=True, blank=True)
+    participate = models.FloatField('Проходной балл', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'пороговые баллы'
+        verbose_name_plural = 'пороговые баллы'
