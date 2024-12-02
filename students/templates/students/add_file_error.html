@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8" />
         {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
         <meta http-equiv="refresh" content="3; URL={% url 'students:index' %}" />
         <title>Добавление учеников из файла</title>
@@ -10,7 +11,10 @@
     <body>
         <header>
             <a href="{% url 'students:index' %}">
-                Список учеников
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
             </a>
         </header>
 

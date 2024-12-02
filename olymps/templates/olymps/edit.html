@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ olymp }} | Редактирование</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <form method="post" action="{% url 'olymps:delete' olymp.id %}">
+                {% csrf_token %}
+                <input class="del_button" type="submit" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить?\nДля этого у объекта не должно быть зависимых.')">
+            </form>
+            <h2 class="head_title">Редактирование олимпиады</h2>
+            <form method="post" action="#">
+                {% csrf_token %}
+                <table>
+                    <tbody>
+                        {% for inp in form %}
+                            <tr>
+                                <td class="form_label">{{inp.label}}</td>
+                                <td class="form_input_table" style="width: 400px">{{inp}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br />
+                <h3>Изменить порядок этапов</h3>
+                <table class="list">
+                    <thead>
+                        <tr>
+                            <td class="id_column">Номер</td>
+                            <td>Название</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ form_stage.management_form }}
+                        {% for f in form_stage %}
+                            <tr>
+                                {{f.id}}
+                                <td class="id_column form_input_table">{{f.num}}</td>
+                                <td class="form_input_table">{{f.instance.name}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br />
+                <input type="submit" value="Сохранить" />
+            </form>
+        </main>
+    </body>
+</html>

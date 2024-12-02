@@ -4,8 +4,8 @@
         <meta charset="utf-8" />
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
-        <title>Добавление учеников из файла</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>Добавление этапов из файла</title>
     </head>
     <body>
         <header>
@@ -18,11 +18,11 @@
         </header>
 
         <main>
-            <h2 class="head_title">Добавление учеников</h2>
+            <h2 class="head_title">{{ olymp }} | Добавление этапов</h2>
             <p>Загрузите заполненный <a href="#">шаблон</a> ниже:</p> 
-            <form action="{% url 'students:add_file_preview' %}" method="post" enctype="multipart/form-data">
+            <form action="#" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input name="uploaded_students" type="file" accept=".xlsx,.xls" required />
+                <input name="file" type="file" accept=".xlsx,.xls,.csv" required />
                 <input type="submit" value="Загрузить">
             </form>
         </main>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ stage }} | Редактирование</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <form method="post" action="{% url 'olymps:stage_delete' olymp.id stage.id %}">
+                {% csrf_token %}
+                <input class="del_button" type="submit" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить?\nДля этого у объекта не должно быть зависимых.')">
+            </form>
+            <h2 class="head_title">Редактирование этапа</h2>
+            <form method="post" action="#">
+                {% csrf_token %}
+                <table>
+                    <tbody>
+                        {% for inp in form %}
+                            <tr>
+                                <td class="form_label">{{inp.label}}</td>
+                                <td class="form_input_table" style="width: 400px">{{inp}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br />
+                <h3>Изменить предметы</h3>
+                <table class="list">
+                    <thead>
+                        <tr>
+                            <td>Предмет</td>
+                            <td>Мин. кл.</td>
+                            <td>Макс. кл.</td>
+                            <td>Дата</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ form_subject.management_form }}
+                        {% for f in form_subject %}
+                            <tr>
+                                {{f.id}}
+                                <td class="form_input_table">{{f.instance.subject.name}}</td>
+                                <td class="id_column form_input_table">{{f.min_class}}</td>
+                                <td class="id_column form_input_table">{{f.max_class}}</td>
+                                <td class="id_column form_input_table">{{f.date}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br />
+                <input type="submit" value="Сохранить" />
+            </form>
+        </main>
+    </body>
+</html>

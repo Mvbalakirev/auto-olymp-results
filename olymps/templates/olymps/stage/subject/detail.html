@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ subject }}</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <a href="{% url 'olymps:stage_subject_edit' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Редактировать</button></a>
+            <h2 class="head_title">{{ subject }}</h2>
+            <h3 class="head_title">{{ subject.stage.name }}</h3>
+            <h3>Участники</h3>
+            {% if applicants %}
+                <table class="list">
+                    <thead>
+                        <tr>
+                            <td class="id_column">ID</td>
+                            <td>Ученик</td>
+                            <td class="id_column">Класс</td>
+                            <td class="id_column">Класс участия</td>
+                            <td class="id_column">Результат</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applicants %}
+                            <tr class="list_item" onclick="document.location = '#'">
+                                
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                Участников ещё нет.
+            {% endif %}
+        </main>
+    </body>
+</html>

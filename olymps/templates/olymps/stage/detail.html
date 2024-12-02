@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ olymp }}</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <a href="{% url 'olymps:stage_edit' stage.olymp.id stage.id %}"><button>Редактировать</button></a>
+            <a href="{% url 'olymps:stage_subject_add' stage.olymp.id stage.id %}"><button>Добавить предмет</button></a>
+            <h2 class="head_title">{{ stage.olymp }}</h2>
+            <h3 class="head_title">{{ stage.name }}</h3>
+            <h3>Предметы</h3>
+            {% if stage_subjects %}
+            <table class="list">
+                <thead>
+                    <tr>
+                        <td class="id_column">ID</td>
+                        <td>Предмет</td>
+                        <td class="id_column">Классы</td>
+                        <td class="id_column">Дата</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stage_subject in stage_subjects %}
+                        <tr class="list_item" onclick="document.location = '{% url 'olymps:stage_subject_detail' stage.olymp.id stage.id stage_subject.id %}'">
+                            <td class="id_column">{{ stage_subject.id }}</td>
+                            <td>{{ stage_subject.subject }}</td>
+                            <td>{{ stage_subject.min_class }}-{{ stage_subject.max_class }}</td>
+                            <td>
+                                {% if stage_subject.date %}
+                                    {{ stage_subject.date|date:"d.m.Y" }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                Предметов ещё нет.
+            {% endif %}
+        </main>
+    </body>
+</html>

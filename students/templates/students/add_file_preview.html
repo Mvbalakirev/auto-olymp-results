@@ -3,18 +3,22 @@
     <head>
         <meta charset="utf-8" />
         {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}" />
         <title>Добавление учеников из файла</title>
     </head>
     <body>
         <header>
             <a href="{% url 'students:index' %}">
-                Список учеников
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
             </a>
         </header>
 
         <main>
-            <h2>Добавление учеников</h2>
+            <h2 class="head_title">Добавление учеников</h2>
             {% if groups_to_add or students_to_add or students_to_delete or students_to_add_dob or students_to_update_group %}
                 <form action="{% url 'students:add_file_submit' %}" method="post">
                     {% csrf_token %}
@@ -35,7 +39,7 @@
                             <td>Дата рождения</td>
                         </thead>
                         {% for user in students_to_delete %}
-                            <tr class="student_item_delete">
+                            <tr class="list_item_delete">
                                 <td>{{ user.id }}</td>
                                 <td>{{ user.last_name }}</td>
                                 <td>{{ user.first_name }}</td>
@@ -71,7 +75,7 @@
                         </thead>
                         {% if students_to_update_group %}
                             {% for user in students_to_update_group %}
-                                <tr class="student_item_update">
+                                <tr class="list_item_update">
                                     <td>{{ user.0 }}</td>
                                     <td>{{ user.1 }}</td>
                                     <td>{{ user.2 }}</td>
@@ -96,7 +100,7 @@
                         {% endif %}
                         {% if students_to_add_dob %}
                             {% for user in students_to_add_dob %}
-                                <tr class="student_item_update">
+                                <tr class="list_item_update">
                                     <td>{{ user.0 }}</td>
                                     <td>{{ user.1 }}</td>
                                     <td>{{ user.2 }}</td>
@@ -131,7 +135,7 @@
                             <td>Литера</td>
                         </thead>
                         {% for group in groups_to_add %}
-                            <tr class="student_item_add">
+                            <tr class="list_item_add">
                                 <td>-</td>
                                 <td>{{ group.num }}</td>
                                 <td>{{ group.liter }}</td>
@@ -155,7 +159,7 @@
                             <td>Дата рождения</td>
                         </thead>
                         {% for user in students_to_add %}
-                            <tr class="student_item_add">
+                            <tr class="list_item_add">
                                 <td>-</td>
                                 <td>{{ user.0 }}</td>
                                 <td>{{ user.1 }}</td>
