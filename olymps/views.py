@@ -41,9 +41,9 @@ def edit(request, olymp_id):
         formset = OlympStageFormset(request.POST, prefix='stage')
         if form.is_valid() and formset.is_valid():
             try:
-                form.save(commit=True)
+                olymp = form.save(commit=True)
                 formset.save(commit=True)
-                return HttpResponseRedirect(reverse('olymps:detail', args=(olymp_id,)))
+                return HttpResponseRedirect(reverse('olymps:detail', args=(olymp.id,)))
             except:
                 return HttpResponse("Произошла ошибка")
         else:
@@ -157,9 +157,9 @@ def stage_edit(request, olymp_id, stage_id):
         formset = StageSubjectsFormset(request.POST, prefix='subject')
         if form.is_valid() and formset.is_valid():
             try:
-                form.save(commit=True)
+                stage = form.save(commit=True)
                 formset.save(commit=True)
-                return HttpResponseRedirect(reverse('olymps:stage_detail', args=(olymp_id, stage_id,)))
+                return HttpResponseRedirect(reverse('olymps:stage_detail', args=(stage.olymp.id, stage.id,)))
             except:
                 return HttpResponse("Произошла ошибка")
         else:
