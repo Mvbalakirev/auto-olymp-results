@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 
 from datetime import date
 from django.utils import timezone
@@ -244,7 +244,26 @@ def stage_subject_detail(request, olymp_id, stage_id, stage_subject_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
     subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    applications = Application.objects.filter(stage_subject=subject).order_by('student')
     context = {
         'subject' : subject,
+        'applications' : applications,
+        'parallels' : list(range(subject.min_class, subject.max_class + 1)) if subject.min_class <= subject.max_class else None,
     }
     return render(request, 'olymps/stage/subject/detail.html', context)
+
+
+def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parallel):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    if not(subject.min_class <= parallel and parallel <= subject.max_class):
+        return HttpResponseNotFound()
+    applications = Application.objects.filter(stage_subject=subject, parallel=parallel).order_by('-result')
+    context = {
+        'subject' : subject,
+        'applications' : applications,
+        'parallels' : list(range(subject.min_class, subject.max_class + 1)) if subject.min_class <= subject.max_class else None,
+        'parallel' : parallel,
+    }
+    return render(request, 'olymps/stage/subject/parallel.html', context)

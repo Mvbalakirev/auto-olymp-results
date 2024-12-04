@@ -21,8 +21,18 @@
             <a href="{% url 'olymps:stage_subject_edit' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Редактировать</button></a>
             <h2 class="head_title">{{ subject }}</h2>
             <h3 class="head_title">{{ subject.stage.name }}</h3>
+            <table>
+                <tr>
+                    <td>Класс:</td>
+                    <td class="selected_parallel"><a href="{% url 'olymps:stage_subject_detail' subject.stage.olymp.id subject.stage.id subject.id %}">Все</a></td>
+                    
+                    {% for i in parallels %}
+                    <td><a href="{% url 'olymps:stage_subject_parallel' subject.stage.olymp.id subject.stage.id subject.id i %}">{{ i }}</a></td>
+                    {% endfor %}
+                </tr>
+            </table>
             <h3>Участники</h3>
-            {% if applicants %}
+            {% if applications %}
                 <table class="list">
                     <thead>
                         <tr>
@@ -34,9 +44,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for app in applicants %}
+                        {% for app in applications %}
                             <tr class="list_item" onclick="document.location = '#'">
-                                
+                                <td class="id_column">{{app.id}}</td>
+                                <td>{{app.student.fio}}</td>
+                                <td class="id_column">{{app.group}}</td>
+                                <td class="id_column">{{app.parallel}}</td>
+                                <td class="id_column">
+                                    {% if app.result %}
+                                        {{app.result}}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

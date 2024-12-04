@@ -3,6 +3,8 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
+import students.models
+
 class Subject(models.Model):
     name = models.CharField('Название', max_length=255)
 
@@ -61,3 +63,19 @@ class Grade(models.Model):
     class Meta:
         verbose_name = 'пороговые баллы'
         verbose_name_plural = 'пороговые баллы'
+
+class Application(models.Model):
+    student = models.ForeignKey(students.models.Student, on_delete=models.PROTECT, verbose_name='Участник')
+    stage_subject = models.ForeignKey(OlympStageSubject, on_delete=models.PROTECT, verbose_name='Предмет этапа')
+    group = models.CharField('Класс', max_length=255, null=True, blank=True)
+    parallel = models.IntegerField('Класс участия')
+    code = models.CharField('Код', max_length=255, null=True, blank=True)
+    result = models.FloatField('Баллы', null=True, blank=True)
+
+    def __str__(self):
+        return str(self.student.fio()) + " — " + str(self.stage_subject)
+
+    class Meta:
+        verbose_name = 'заявка'
+        verbose_name_plural = 'заявки'
+    

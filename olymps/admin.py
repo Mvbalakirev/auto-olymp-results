@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Olymp, OlympStage, OlympStageSubject, Subject
+from .models import *
 
 
 class OlympStageInline(admin.TabularInline):
@@ -30,3 +30,5 @@ admin.site.register(Subject)
 admin.site.register(Olymp, OlympAdmin)
 admin.site.register(OlympStage, OlympStageAdmin)
 admin.site.register(OlympStageSubject)
+admin.site.register(Grade)
+admin.site.register(Application)
