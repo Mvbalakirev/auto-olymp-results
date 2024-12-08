@@ -2,7 +2,7 @@ import django.forms as forms
 import formset.widgets
 from django.core.exceptions import ValidationError
 
-from olymps.models import *
+from .models import *
 
 
 class OlympForm(forms.ModelForm):
@@ -35,3 +35,8 @@ StageSubjectsFormset = forms.modelformset_factory(
     extra=0,
     can_delete=False
 )
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['id', 'stage_subject', 'student', 'group', 'parallel', 'code', 'result', 'status']
