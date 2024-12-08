@@ -15,6 +15,12 @@ OlympStageFormset = forms.modelformset_factory(OlympStage, fields=['id', 'num'],
 
 
 class StageForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['olymp'].widget.attrs.update({
+            'class' : 'js-chosen'
+        })
+    
     class Meta:
         model = OlympStage
         fields = ['olymp', 'name', 'num']
@@ -22,7 +28,14 @@ class StageForm(forms.ModelForm):
 class StageSubjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["date"].widget = formset.widgets.DateInput()
+        self.fields['date'].widget = formset.widgets.DateInput()
+        self.fields['subject'].widget.attrs.update({
+            'class' : 'js-chosen'
+        })
+        self.fields['stage'].widget.attrs.update({
+            'class' : 'js-chosen'
+        })
+
     class Meta:
         model = OlympStageSubject
         fields=['id', 'stage', 'subject', 'min_class', 'max_class', 'date']
@@ -37,6 +50,14 @@ StageSubjectsFormset = forms.modelformset_factory(
 )
 
 class ApplicationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['student'].widget.attrs.update({
+            'class' : 'js-chosen'
+        })
+        self.fields['stage_subject'].widget.attrs.update({
+            'class' : 'js-chosen'
+        })
     class Meta:
         model = Application
         fields = ['id', 'stage_subject', 'student', 'group', 'parallel', 'code', 'result', 'status']
