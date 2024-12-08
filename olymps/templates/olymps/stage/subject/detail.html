@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8" />
         {% load static %}
-        <script src="{% static 'jquery/jquery-3.7.1.min.js' %}"></script>
-        <script src="{% static 'jquery/chosen.jquery.min.js' %}"></script>
+        <script src="{% static 'jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'jquery/chosen/chosen.jquery.min.js' %}"></script>
         <script src="{% static 'script.js' %}"></script>
-        <link rel="stylesheet" type="text/css" href="{% static 'jquery/chosen.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'jquery/chosen/chosen.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
         <title>{{ subject }}</title>
@@ -36,6 +36,9 @@
                 </tr>
             </table>
             <h3>Участники</h3>
+            <a href="{% url 'olymps:application_add' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Добавить одного</button></a>
+            <br />
+            <br />
             {% if applications %}
                 <table class="list">
                     <thead>
@@ -50,10 +53,14 @@
                     </thead>
                     <tbody>
                         {% for app in applications %}
-                            <tr class="list_item" onclick="document.location = '#'">
+                            <tr class="list_item" onclick="document.location = '{% url 'olymps:application_edit' subject.stage.olymp.id subject.stage.id subject.id app.id %}'">
                                 <td class="id_column">{{app.id}}</td>
                                 <td>{{app.student.fio}}</td>
-                                <td class="id_column">{{app.group}}</td>
+                                <td class="id_column">
+                                    {% if app.group %}
+                                        {{app.group}}
+                                    {% endif %}
+                                </td>
                                 <td class="id_column">{{app.parallel}}</td>
                                 <td class="id_column">
                                     {% if app.result %}

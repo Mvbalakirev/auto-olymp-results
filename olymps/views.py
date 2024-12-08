@@ -259,7 +259,7 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
     subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
     if not(subject.min_class <= parallel and parallel <= subject.max_class):
         return HttpResponseNotFound()
-    applications = Application.objects.filter(stage_subject=subject, parallel=parallel).order_by('-result')
+    applications = Application.objects.filter(stage_subject=subject, parallel=parallel).order_by('status', '-result')
     context = {
         'subject' : subject,
         'applications' : applications,
@@ -267,3 +267,70 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
         'parallel' : parallel,
     }
     return render(request, 'olymps/stage/subject/parallel.html', context)
+
+def application_add(request, olymp_id, stage_id, stage_subject_id):
+    if request.method == "POST":
+        form = ApplicationForm(request.POST)
+        application = form.save(commit=False)
+        if application.student.group and not application.group:
+            application.group = str(application.student.group)
+            form.group = str(application.student.group)
+        if application.student.group and not application.parallel:
+            application.parallel = application.student.group.num
+            form.parallel = application.student.group.num
+        if not application.student.group and not application.group:
+            return HttpResponse("Не указан класс участия")
+        if form.is_valid():
+            try:
+                application.save()
+
+                return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(application.stage_subject.stage.olymp.id, application.stage_subject.stage.id, application.stage_subject.id)))
+            except:
+                return HttpResponse("Произошла ошибка")
+        else:
+            return HttpResponse("Данные некорректны")
+    else:
+        olymp = get_object_or_404(Olymp, pk=olymp_id)
+        stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+        subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+        context = {
+            'olymp' : olymp,
+            'stage' : stage,
+            'subject' : subject,
+            'form' : ApplicationForm(instance=Application(stage_subject=subject)),
+        }
+        return render(request, 'olymps/stage/subject/applications/add.html', context)
+
+
+def application_edit(request, olymp_id, stage_id, stage_subject_id, app_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    application = get_object_or_404(Application, id=app_id, stage_subject=subject)
+    if request.method == "POST":
+        form = ApplicationForm(request.POST, instance=application)
+        application = form.save(commit=False)
+        if application.student.group and not application.group:
+            application.group = str(application.student.group)
+            form.group = str(application.student.group)
+        if application.student.group and not application.parallel:
+            application.parallel = application.student.group.num
+            form.parallel = application.student.group.num
+        if not application.student.group and not application.group:
+            return HttpResponse("Не указан класс участия")
+        if form.is_valid():
+            try:
+                application.save()
+                return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(application.stage_subject.stage.olymp.id, application.stage_subject.stage.id, application.stage_subject.id)))
+            except:
+                return HttpResponse("Произошла ошибка")
+        else:
+            return HttpResponse("Данные некорректны")
+    else:
+        context = {
+            'olymp' : olymp,
+            'stage' : stage,
+            'subject' : subject,
+            'form' : ApplicationForm(instance=application),
+        }
+        return render(request, 'olymps/stage/subject/applications/edit.html', context)

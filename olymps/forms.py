@@ -58,6 +58,7 @@ class ApplicationForm(forms.ModelForm):
         self.fields['stage_subject'].widget.attrs.update({
             'class' : 'js-chosen'
         })
+        self.fields['parallel'].required = False
     class Meta:
         model = Application
         fields = ['id', 'stage_subject', 'student', 'group', 'parallel', 'code', 'result', 'status']
