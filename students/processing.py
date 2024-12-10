@@ -117,11 +117,11 @@ def save_students_update_lists(request):
     students_to_update_group = request.session.get('students_to_update_group')
     students_to_add_dob = request.session.get('students_to_add_dob')
 
-    # request.session.pop('students_to_add')
-    # request.session.pop('groups_to_add')
-    # request.session.pop('students_to_delete')
-    # request.session.pop('students_to_update_group')
-    # request.session.pop('students_to_add_dob')
+    request.session.pop('students_to_add')
+    request.session.pop('groups_to_add')
+    request.session.pop('students_to_delete')
+    request.session.pop('students_to_update_group')
+    request.session.pop('students_to_add_dob')
 
     is_delete = False
     try:
