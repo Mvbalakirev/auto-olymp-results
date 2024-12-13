@@ -36,6 +36,10 @@
                 </tr>
             </table>
             <h3>Участники</h3>
+            <a href="{% url 'olymps:application_add' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Добавить одного</button></a>
+            <a href="{% url 'olymps:application_add_file' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Загрузить из файла</button></a>
+            <br />
+            <br />
             {% if applications %}
             <table class="list">
                 <thead>

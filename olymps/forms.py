@@ -3,6 +3,7 @@ import formset.widgets
 from django.core.exceptions import ValidationError
 
 from .models import *
+from students.models import *
 
 
 class OlympForm(forms.ModelForm):
@@ -59,6 +60,25 @@ class ApplicationForm(forms.ModelForm):
             'class' : 'js-chosen'
         })
         self.fields['parallel'].required = False
+    
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if cleaned_data['student'].group and not cleaned_data['group']:
+            cleaned_data['group'] = str(cleaned_data['student'].group)
+        if cleaned_data['student'].group and not cleaned_data['parallel']:
+            cleaned_data['parallel'] = max(cleaned_data['student'].group.num, cleaned_data['stage_subject'].min_class)
+        if not cleaned_data['student'].group and not cleaned_data['parallel']:
+            raise ValidationError(
+                "Невозможно получить параллель ученика."
+            )
+        
+        if cleaned_data['parallel'] < cleaned_data['stage_subject'].min_class or cleaned_data > cleaned_data['stage_subject'].max_class:
+            raise ValidationError(
+                "Параллель не соответствует предмету."
+            )
+
+        return cleaned_data
+
     class Meta:
         model = Application
         fields = ['id', 'stage_subject', 'student', 'group', 'parallel', 'code', 'result', 'status']

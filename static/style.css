@@ -67,6 +67,10 @@ header a:hover {
     background-color: #cbffd4;
 }
 
+.list_item_update {
+    background-color: yellow;
+}
+
 .list_item_delete {
     background-color: #ffd4d4;
 }

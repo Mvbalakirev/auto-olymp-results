@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <script src="{% static 'jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'jquery/chosen/chosen.jquery.min.js' %}"></script>
+        <script src="{% static 'script.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'jquery/chosen/chosen.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>Загрузка из файла</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <h2 class="head_title">Предпросмотр</h2>
+            {% if to_add or to_update or errors %}
+                <form action="{% url 'students:add_file_submit' %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit", value="Применить изменения", style="background-color: #cbffd4; border-color: #bbffc4" />
+                </form>
+                <p>Проверьте корректность изменений ниже:</p>
+                {% if to_add %}
+                    <h3>Будут добавлены:</h3>
+                    <table class="list">
+                        <thead>
+                            <tr>
+                                <td class="id_column">ID</td>
+                                <td>Ученик</td>
+                                <td class="id_column">Класс</td>
+                                <td class="id_column">Класс участия</td>
+                                <td class="id_column">Баллы</td>
+                                <td class="id_column">Статус</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in to_add %}
+                                <tr class="list_item_add">
+                                    <td class="id_column">{{app.id|default_if_none:""}}</td>
+                                    <td>{{app.student.fio}}</td>
+                                    <td class="id_column">{{app.group|default_if_none:""}}</td>
+                                    <td class="id_column">{{app.parallel}}</td>
+                                    <td class="id_column">{{app.result|default_if_none:""}}</td>
+                                    <td class="id_column">{{ app.get_status_display }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                <br />
+                <br />
+                {% if to_update %}
+                    <h3>Будут добавлены:</h3>
+                    <table class="list">
+                        <thead>
+                            <tr>
+                                <td class="id_column">ID</td>
+                                <td>Ученик</td>
+                                <td class="id_column">Класс</td>
+                                <td class="id_column">Класс участия</td>
+                                <td class="id_column">Баллы</td>
+                                <td class="id_column">Статус</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in to_update %}
+                                <tr class="list_item_no_hover">
+                                    <td class="id_column">{{app.new.id|default_if_none:""}}</td>
+                                    <td>{{app.new.student.fio}}</td>
+                                    {% if app.old.group == app.new.group %}
+                                        <td class="id_column">{{app.new.group|default_if_none:""}}</td>
+                                    {% else %}
+                                        <td class="id_column list_item_update"><s>{{app.old.group|default_if_none:""}}</s> {{app.new.group|default_if_none:""}}</td>
+                                    {% endif %}
+                                    {% if app.old.parallel == app.new.parallel %}
+                                        <td class="id_column">{{app.new.parallel|default_if_none:""}}</td>
+                                    {% else %}
+                                        <td class="id_column list_item_update"><s>{{app.old.parallel|default_if_none:""}}</s> {{app.new.parallel|default_if_none:""}}</td>
+                                    {% endif %}
+                                    {% if app.old.result == app.new.result %}
+                                        <td class="id_column">{{app.new.result|default_if_none:""}}</td>
+                                    {% else %}
+                                        <td class="id_column list_item_update"><s>{{app.old.result|default_if_none:""}}</s> {{app.new.result|default_if_none:""}}</td>
+                                    {% endif %}
+                                    {% if app.old.status == app.new.status %}
+                                        <td class="id_column">{{app.new.get_status_display}}</td>
+                                    {% else %}
+                                        <td class="id_column list_item_update"><s>{{app.old.get_status_display}}</s> {{app.new.get_status_display}}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            {% else %}
+                <p>Изменений нет.</p>
+            {% endif %}
+        </main>
+    </body>
+</html>

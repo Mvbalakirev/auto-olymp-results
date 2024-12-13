@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'jquery/chosen/chosen.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
-        <title>{{ subject }} | Добавление участника</title>
+        <title>{{ subject }} | Редактирование результата</title>
     </head>
     <body>
         <header>
@@ -22,7 +22,7 @@
         </header>
 
         <main>
-            <h2 class="head_title">Добавление участника</h2>
+            <h2 class="head_title">Редактирование результата</h2>
             <form method="post" action="#">
                 {% csrf_token %}
                 <table>
