@@ -301,6 +301,9 @@ def application_add_file(request, olymp_id, stage_id, stage_subject_id):
     subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
     if request.method == "POST":
         context = {
+            'olymp' : olymp,
+            'stage' : stage,
+            'subject' : subject,
             'to_add' : [],
             'to_update' : [],
             'no_change' : [],
@@ -330,11 +333,11 @@ def application_add_file_submit(request, olymp_id, stage_id, stage_subject_id):
         olymp = get_object_or_404(Olymp, pk=olymp_id)
         stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
         subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
-        try:
-            processing.save_students_update_lists(request)
-            return HttpResponseRedirect(reverse('olymp: '))
-        except:
-            return HttpResponse("Произошла ошибка")
+        # try:
+        processing.save_applications_update_lists(request, subject)
+        return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(subject.stage.olymp.id, subject.stage.id, subject.id)))
+        # except:
+        #     return HttpResponse("Произошла ошибка")
     else:
         return 
 

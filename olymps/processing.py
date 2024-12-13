@@ -160,11 +160,13 @@ def get_applications_update_lists(request, context, subject, checks):
                     break
                 app.status = None
             
-            
-            context['to_update'].append({
-                'old' : oldapp,
-                'new' : app,
-            })
+            if model_to_dict(oldapp) != model_to_dict(app):
+                context['to_update'].append({
+                    'old' : oldapp,
+                    'new' : app,
+                })
+            else:
+                context['no_change'].append(app)
         except:
             app = Application(stage_subject=subject, student=student)
             app.parallel = item['parallel']
@@ -179,3 +181,28 @@ def get_applications_update_lists(request, context, subject, checks):
             context['to_add'].append(app)
         request.session['to_add'] = [model_to_dict(x) for x in context['to_add']]
         request.session['to_update'] = [model_to_dict(x['new']) for x in context['to_update']]
+
+
+def save_applications_update_lists(request, subject):
+    to_add = request.session.get('to_add')
+    to_update = request.session.get('to_update')
+    request.session.pop('to_add')
+    request.session.pop('to_update')
+    
+    if 'is_add' in request.POST:
+        for data in to_add:
+            try:
+                data['stage_subject_id'] = data.pop('stage_subject')
+                data['student_id'] = data.pop('student')
+                Application(**data).save()
+            except:
+                pass
+    
+    if 'is_update' in request.POST:
+        for data in to_update:
+            try:
+                data['stage_subject_id'] = data.pop('stage_subject')
+                data['student_id'] = data.pop('student')
+                Application(**data).save()
+            except:
+                pass

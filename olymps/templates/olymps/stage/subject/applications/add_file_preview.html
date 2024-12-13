@@ -24,9 +24,13 @@
         <main>
             <h2 class="head_title">Предпросмотр</h2>
             {% if to_add or to_update or errors %}
-                <form action="{% url 'students:add_file_submit' %}" method="post">
+                <form action="{% url 'olymps:application_add_file_submit' subject.stage.olymp.id subject.stage.id subject.id %}" method="post">
                     {% csrf_token %}
-                    <input type="submit", value="Применить изменения", style="background-color: #cbffd4; border-color: #bbffc4" />
+                    <input type="submit" value="Применить изменения" style="background-color: #cbffd4; border-color: #bbffc4" />
+                    <br />
+                    <input type="checkbox" name="is_add" checked /> Добавлять новые
+                    <br />
+                    <input type="checkbox" name="is_update" checked /> Обновлять существующие
                 </form>
                 <p>Проверьте корректность изменений ниже:</p>
                 {% if to_add %}
@@ -55,11 +59,11 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <br />
+                    <br />
                 {% endif %}
-                <br />
-                <br />
                 {% if to_update %}
-                    <h3>Будут добавлены:</h3>
+                    <h3>Будут обновлены:</h3>
                     <table class="list">
                         <thead>
                             <tr>
@@ -96,6 +100,35 @@
                                     {% else %}
                                         <td class="id_column list_item_update"><s>{{app.old.get_status_display}}</s> {{app.new.get_status_display}}</td>
                                     {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <br />
+                    <br />
+                {% endif %}
+                {% if no_change %}
+                    <h3>Без изменений:</h3>
+                    <table class="list">
+                        <thead>
+                            <tr>
+                                <td class="id_column">ID</td>
+                                <td>Ученик</td>
+                                <td class="id_column">Класс</td>
+                                <td class="id_column">Класс участия</td>
+                                <td class="id_column">Баллы</td>
+                                <td class="id_column">Статус</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in no_change %}
+                                <tr class="list_item_no_hover">
+                                    <td class="id_column">{{app.id|default_if_none:""}}</td>
+                                    <td>{{app.student.fio}}</td>
+                                    <td class="id_column">{{app.group|default_if_none:""}}</td>
+                                    <td class="id_column">{{app.parallel}}</td>
+                                    <td class="id_column">{{app.result|default_if_none:""}}</td>
+                                    <td class="id_column">{{ app.get_status_display }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
