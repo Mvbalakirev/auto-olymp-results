@@ -1,5 +1,6 @@
 html, body {
     margin: 0px;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 main {
@@ -66,12 +67,16 @@ header a:hover {
     background-color: #cbffd4;
 }
 
+.list_item_update {
+    background-color: yellow;
+}
+
 .list_item_delete {
     background-color: #ffd4d4;
 }
 
 .id_column {
-    width: 80px;
+    width: 90px;
 }
 
 td.form_input_table input {

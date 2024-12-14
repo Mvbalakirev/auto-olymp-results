@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <script src="{% static 'jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'jquery/chosen/chosen.jquery.min.js' %}"></script>
+        <script src="{% static 'script.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'jquery/chosen/chosen.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ subject }} | Редактирование результата</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <h2 class="head_title">Редактирование результата</h2>
+            <form method="post" action="#">
+                {% csrf_token %}
+                <table>
+                    <tbody>
+                        {% for inp in form %}
+                            <tr>
+                                <td class="form_label">{{inp.label}}</td>
+                                <td class="form_input_table" style="width: 400px">{{inp}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br />
+                <input type="submit" value="Сохранить" />
+            </form>
+        </main>
+    </body>
+</html>
