@@ -45,7 +45,7 @@ class StageSubjectForm(forms.ModelForm):
 StageSubjectsFormset = forms.modelformset_factory(
     OlympStageSubject,
     StageSubjectForm,
-    fields=['id', 'min_class', 'max_class', 'date'],
+    fields=['id', 'subject', 'stage', 'min_class', 'max_class', 'date'],
     extra=0,
     can_delete=False
 )
