@@ -28,4 +28,6 @@ urlpatterns = [
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/application_add_file_submit/', views.application_add_file_submit, name='application_add_file_submit'),
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/app-<int:app_id>/edit/', views.application_edit, name='application_edit'),
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/app-<int:app_id>/delete/', views.application_delete, name='application_delete'),
+    path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/mass_edit/', views.application_mass_edit, name='application_mass_edit'),
+    path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/<int:parallel>/mass_edit/', views.application_parallel_mass_edit, name='application_parallel_mass_edit'),
 ]

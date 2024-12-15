@@ -39,6 +39,7 @@
                         <tr>
                             <td class="id_column">ID</td>
                             <td>Ученик</td>
+                            <td>Код</td>
                             <td class="id_column">Класс</td>
                             <td class="id_column">Класс участия</td>
                             <td class="id_column">Баллы</td>
@@ -50,6 +51,7 @@
                             <tr class="list_item_add">
                                 <td class="id_column">{{app.id|default_if_none:""}}</td>
                                 <td>{{app.student.fio}}</td>
+                                <td>{{app.code|default_if_none:""}}</td>
                                 <td class="id_column">{{app.group|default_if_none:""}}</td>
                                 <td class="id_column">{{app.parallel}}</td>
                                 <td class="id_column">{{app.result|default_if_none:""}}</td>
@@ -68,6 +70,7 @@
                         <tr>
                             <td class="id_column">ID</td>
                             <td>Ученик</td>
+                            <td>Код</td>
                             <td class="id_column">Класс</td>
                             <td class="id_column">Класс участия</td>
                             <td class="id_column">Баллы</td>
@@ -79,6 +82,11 @@
                             <tr class="list_item_no_hover">
                                 <td class="id_column">{{app.new.id|default_if_none:""}}</td>
                                 <td>{{app.new.student.fio}}</td>
+                                {% if app.old.code == app.new.code %}
+                                    <td class="id_column">{{app.new.code|default_if_none:""}}</td>
+                                {% else %}
+                                    <td class="id_column list_item_update"><s>{{app.old.code|default_if_none:""}}</s> {{app.new.code|default_if_none:""}}</td>
+                                {% endif %}
                                 {% if app.old.group == app.new.group %}
                                     <td class="id_column">{{app.new.group|default_if_none:""}}</td>
                                 {% else %}
@@ -113,6 +121,7 @@
                         <tr>
                             <td class="id_column">ID</td>
                             <td>Ученик</td>
+                            <td>Код</td>
                             <td class="id_column">Класс</td>
                             <td class="id_column">Класс участия</td>
                             <td class="id_column">Баллы</td>
@@ -124,6 +133,7 @@
                             <tr class="list_item_no_hover">
                                 <td class="id_column">{{app.id|default_if_none:""}}</td>
                                 <td>{{app.student.fio}}</td>
+                                <td>{{app.code|default_if_none:""}}</td>
                                 <td class="id_column">{{app.group|default_if_none:""}}</td>
                                 <td class="id_column">{{app.parallel}}</td>
                                 <td class="id_column">{{app.result|default_if_none:""}}</td>
@@ -143,6 +153,7 @@
                             <td>Фамилия</td>
                             <td>Имя</td>
                             <td>Отчество</td>
+                            <td>Код</td>
                             <td class="id_column">Класс</td>
                             <td class="id_column">Класс участия</td>
                             <td class="id_column">Баллы</td>
@@ -156,6 +167,7 @@
                                 <td>{{app.last_name|default_if_none:""}}</td>
                                 <td>{{app.first_name|default_if_none:""}}</td>
                                 <td>{{app.middle_name|default_if_none:""}}</td>
+                                <td>{{app.code|default_if_none:""}}</td>
                                 <td class="id_column">{{app.group|default_if_none:""}}</td>
                                 <td class="id_column">{{app.parallel|default_if_none:""}}</td>
                                 <td class="id_column">{{app.result|default_if_none:""}}</td>

@@ -34,6 +34,9 @@ class StageSubjectForm(forms.ModelForm):
             self.fields['subject'].widget.attrs.update({
                 'class' : 'js-chosen'
             })
+        except:
+            pass
+        try:
             self.fields['stage'].widget.attrs.update({
                 'class' : 'js-chosen'
             })
@@ -56,13 +59,22 @@ StageSubjectsFormset = forms.modelformset_factory(
 class ApplicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['student'].widget.attrs.update({
-            'class' : 'js-chosen'
-        })
-        self.fields['stage_subject'].widget.attrs.update({
-            'class' : 'js-chosen'
-        })
-        self.fields['parallel'].required = False
+        try:
+            self.fields['student'].widget.attrs.update({
+                'class' : 'js-chosen'
+            })
+        except:
+            pass
+        try:
+            self.fields['stage_subject'].widget.attrs.update({
+                'class' : 'js-chosen'
+            })
+        except:
+            pass
+        try:
+            self.fields['parallel'].required = False
+        except:
+            pass
     
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -85,3 +97,11 @@ class ApplicationForm(forms.ModelForm):
     class Meta:
         model = Application
         fields = ['id', 'stage_subject', 'student', 'group', 'parallel', 'code', 'result', 'status']
+
+ApplicationFormset = forms.modelformset_factory(
+    Application,
+    ApplicationForm,
+    fields=['id', 'stage_subject', 'student', 'group', 'parallel', 'code', 'result', 'status'],
+    extra=0,
+    can_delete=True,
+)

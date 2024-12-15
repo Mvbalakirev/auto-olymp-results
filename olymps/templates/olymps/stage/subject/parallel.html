@@ -37,6 +37,7 @@
             </table>
             <h3>Участники</h3>
             <a href="{% url 'olymps:application_add' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Добавить одного</button></a>
+            <a href="{% url 'olymps:application_parallel_mass_edit' subject.stage.olymp.id subject.stage.id subject.id parallel %}"><button>Редактировать</button></a>
             <a href="{% url 'olymps:application_add_file' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Загрузить из файла</button></a>
             <br />
             <br />
@@ -46,6 +47,7 @@
                     <tr>
                         <td class="id_column">ID</td>
                         <td>Ученик</td>
+                        <td>Код</td>
                         <td class="id_column">Класс</td>
                         <td class="id_column">Класс участия</td>
                         <td class="id_column">Баллы</td>
@@ -57,17 +59,10 @@
                         <tr class="list_item" onclick="document.location = '{% url 'olymps:application_edit' subject.stage.olymp.id subject.stage.id subject.id app.id %}'">
                             <td class="id_column">{{app.id}}</td>
                             <td>{{app.student.fio}}</td>
-                            <td class="id_column">
-                                {% if app.group %}
-                                    {{app.group}}
-                                {% endif %}
-                            </td>
+                            <td>{{app.code|default_if_none:""}}</td>
+                            <td class="id_column">{{app.group|default_if_none:""}}</td>
                             <td class="id_column">{{app.parallel}}</td>
-                            <td class="id_column">
-                                {% if app.result %}
-                                    {{app.result}}
-                                {% endif %}
-                            </td>
+                            <td class="id_column">{{app.result|default_if_none:""}}</td>
                             <td class="id_column">{{ app.get_status_display }}</td>
                         </tr>
                     {% endfor %}

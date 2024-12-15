@@ -244,7 +244,7 @@ def stage_subject_detail(request, olymp_id, stage_id, stage_subject_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
     subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
-    applications = Application.objects.filter(stage_subject=subject).order_by('student')
+    applications = subject.application_set.all().order_by('student__last_name', 'student__first_name', 'student__middle_name')
     context = {
         'subject' : subject,
         'applications' : applications,
@@ -259,7 +259,7 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
     subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
     if not(subject.min_class <= parallel and parallel <= subject.max_class):
         return HttpResponseNotFound()
-    applications = Application.objects.filter(stage_subject=subject, parallel=parallel).order_by('status', '-result')
+    applications = subject.application_set.filter(parallel=parallel).order_by('status', '-result')
     context = {
         'subject' : subject,
         'applications' : applications,
@@ -384,8 +384,52 @@ def application_delete(request, olymp_id, stage_id, stage_subject_id, app_id):
     if request.method == 'POST':
         try:
             application.delete()
-            return HttpResponseRedirect(reverse('olymps:stage_subject_delail', args=(olymp_id, stage_id)))
+            return HttpResponseRedirect(reverse('olymps:stage_subject_delail', args=(olymp_id, stage_id, stage_subject_id)))
         except:
             return HttpResponse('Произошла ошибка')
     else:
         return HttpResponse('Некорректный метод запроса')
+
+
+def application_mass_edit(request, olymp_id, stage_id, stage_subject_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    if request.method == 'POST':
+        formset = ApplicationFormset(request.POST, prefix='app')
+        if formset.is_valid():
+            try:
+                formset.save(commit=True)
+                return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(olymp_id, stage_id, stage_subject_id)))
+            except:
+                return HttpResponse("Произошла ошибка")
+    else:
+        context = {
+            'subject' : subject,
+            'formset' : ApplicationFormset(prefix='app', queryset=subject.application_set.all().order_by('student__last_name', 'student__first_name', 'student__middle_name'))
+        }
+        return render(request, 'olymps/stage/subject/applications/mass_edit.html', context)
+
+def application_parallel_mass_edit(request, olymp_id, stage_id, stage_subject_id, parallel):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    
+    if not(subject.min_class <= parallel and parallel <= subject.max_class):
+        return HttpResponseNotFound()
+
+    if request.method == 'POST':
+        formset = ApplicationFormset(request.POST, prefix='app')
+        if formset.is_valid():
+            try:
+                formset.save(commit=True)
+                return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)))
+            except:
+                return HttpResponse("Произошла ошибка")
+    else:
+        context = {
+            'subject' : subject,
+            'parallel' : parallel,
+            'formset' : ApplicationFormset(prefix='app', queryset=subject.application_set.filter(parallel=parallel).order_by('student__last_name', 'student__first_name', 'student__middle_name'))
+        }
+        return render(request, 'olymps/stage/subject/applications/parallel_mass_edit.html', context)

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <script src="{% static 'jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'jquery/chosen/chosen.jquery.min.js' %}"></script>
+        <script src="{% static 'script.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'jquery/chosen/chosen.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'olymps/style.css' %}" />
+        <title>{{ subject }}</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'students:index' %}">
+                Ученики
+            </a>
+            <a href="{% url 'olymps:index' %}">
+                Олимпиады
+            </a>
+        </header>
+
+        <main>
+            <h2 class="head_title">{{ subject }}</h2>
+            <h3 class="head_title">{{ subject.stage.name }}</h3>
+            <h3>Участники</h3>
+            <form method="post" action="#">
+                {% csrf_token %}
+                <input type="submit" value="Сохранить" />
+                <br />
+                <br />
+                <table class="list">
+                    <thead>
+                        <tr>
+                            <td class="id_column">ID</td>
+                            <td>Ученик</td>
+                            <td>Код</td>
+                            <td class="id_column">Класс</td>
+                            <td class="id_column">Класс участия</td>
+                            <td class="id_column">Баллы</td>
+                            <td class="id_column">Статус</td>
+                            <td class="id_column" style="color: red;">Удалить?</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ formset.management_form }}
+                        {% for f in formset %}
+                            <tr>
+                                {{f.id}}
+                                {{f.student.as_hidden}}
+                                {{f.stage_subject.as_hidden}}
+                                <td class="id_column">{{f.instance.id}}</td>
+                                <td>{{f.instance.student.fio}}</td>
+                                <td>{{f.code}}</td>
+                                <td class="id_column">{{ f.group }}</td>
+                                <td class="id_column">{{ f.parallel }}</td>
+                                <td class="id_column">{{ f.result }}</td>
+                                <td class="id_column">{{ f.status }}</td>
+                                <td class="id_column" style="color: red;">{{ f.DELETE }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </main>
+    </body>
+</html>
