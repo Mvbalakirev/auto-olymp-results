@@ -22,6 +22,10 @@
         </header>
 
         <main>
+            <form method="post" action="{% url 'olymps:application_delete' application.stage_subject.stage.olymp.id application.stage_subject.stage.id application.stage_subject.id application.id %}">
+                {% csrf_token %}
+                <input class="del_button" type="submit" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить?\nДля этого у объекта не должно быть зависимых.')">
+            </form>
             <h2 class="head_title">Редактирование результата</h2>
             <form method="post" action="#">
                 {% csrf_token %}

@@ -30,12 +30,15 @@ class StageSubjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['date'].widget = formset.widgets.DateInput()
-        self.fields['subject'].widget.attrs.update({
-            'class' : 'js-chosen'
-        })
-        self.fields['stage'].widget.attrs.update({
-            'class' : 'js-chosen'
-        })
+        try:
+            self.fields['subject'].widget.attrs.update({
+                'class' : 'js-chosen'
+            })
+            self.fields['stage'].widget.attrs.update({
+                'class' : 'js-chosen'
+            })
+        except:
+            pass
 
     class Meta:
         model = OlympStageSubject
@@ -45,7 +48,7 @@ class StageSubjectForm(forms.ModelForm):
 StageSubjectsFormset = forms.modelformset_factory(
     OlympStageSubject,
     StageSubjectForm,
-    fields=['id', 'subject', 'stage', 'min_class', 'max_class', 'date'],
+    fields=['id', 'min_class', 'max_class', 'date'],
     extra=0,
     can_delete=False
 )
@@ -72,7 +75,7 @@ class ApplicationForm(forms.ModelForm):
                 "Невозможно получить параллель ученика."
             )
         
-        if cleaned_data['parallel'] < cleaned_data['stage_subject'].min_class or cleaned_data > cleaned_data['stage_subject'].max_class:
+        if cleaned_data['parallel'] < cleaned_data['stage_subject'].min_class or cleaned_data['parallel'] > cleaned_data['stage_subject'].max_class:
             raise ValidationError(
                 "Параллель не соответствует предмету."
             )

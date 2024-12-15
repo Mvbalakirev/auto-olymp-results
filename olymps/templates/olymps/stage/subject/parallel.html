@@ -54,7 +54,7 @@
                 </thead>
                 <tbody>
                     {% for app in applications %}
-                        <tr class="list_item" onclick="document.location = '#'">
+                        <tr class="list_item" onclick="document.location = '{% url 'olymps:application_edit' subject.stage.olymp.id subject.stage.id subject.id app.id %}'">
                             <td class="id_column">{{app.id}}</td>
                             <td>{{app.student.fio}}</td>
                             <td class="id_column">

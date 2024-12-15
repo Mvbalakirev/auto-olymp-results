@@ -375,3 +375,17 @@ def application_edit(request, olymp_id, stage_id, stage_subject_id, app_id):
             'form' : ApplicationForm(instance=application),
         }
         return render(request, 'olymps/stage/subject/applications/edit.html', context)
+
+def application_delete(request, olymp_id, stage_id, stage_subject_id, app_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    application = get_object_or_404(Application, stage_subject=subject, id=app_id)
+    if request.method == 'POST':
+        try:
+            application.delete()
+            return HttpResponseRedirect(reverse('olymps:stage_subject_delail', args=(olymp_id, stage_id)))
+        except:
+            return HttpResponse('Произошла ошибка')
+    else:
+        return HttpResponse('Некорректный метод запроса')

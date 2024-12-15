@@ -56,7 +56,7 @@ class OlympStageSubject(models.Model):
 
 class Grade(models.Model):
     stage_subject = models.ForeignKey(OlympStageSubject, on_delete=models.CASCADE, verbose_name='Предмет')
-    group_num = models.IntegerField('Класс')
+    parallel = models.IntegerField('Класс')
     gold = models.FloatField('Победитель', null=True, blank=True)
     silver = models.FloatField('Призёр', null=True, blank=True)
     participate = models.FloatField('Проходной балл', null=True, blank=True)
