@@ -88,3 +88,7 @@ td.form_input_table input {
     background-color: red;
     border-color: red;
 }
+
+.num-inp {
+    width: 70px;
+}

@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8" />
         {% load static %}
+        {% load l10n %}
         <script src="{% static 'jquery/jquery.min.js' %}"></script>
         <script src="{% static 'jquery/chosen/chosen.jquery.min.js' %}"></script>
         <script src="{% static 'script.js' %}"></script>
@@ -35,6 +36,28 @@
                     {% endfor %}
                 </tr>
             </table>
+            <div onclick="$('#grade-select').slideToggle(500);" class="slide-header"><h3><a href="#">Управление баллами</a></h3></div>
+            <div id="grade-select">
+                <form method="post" action="#">
+                    Добавить участников предыдущего этапа, набравших не менее
+                    <input type="number" step="any" name="grade-participant" class="num-inp" value="{{grade.participate|unlocalize|default_if_none:""}}" required/>
+                    баллов
+                    <br />
+                    <button>Добавить</button>
+                </form>
+                <br />
+                <form method="post" action="#">
+                    Сделать победителями от
+                    <input type="number" step="any" name="grade-gold" class="num-inp" value="{{grade.gold|unlocalize|default_if_none:""}}" required />
+                    баллов,
+                    <br />
+                    Призёрами от
+                    <input type="number" step="any" name="grade-silver" class="num-inp" value="{{grade.silver|unlocalize|default_if_none:""}}" required />
+                    баллов
+                    <br />
+                    <button>Подтвердить</button>
+                </form>
+            </div>
             <h3>Участники</h3>
             <a href="{% url 'olymps:application_add' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Добавить одного</button></a>
             <a href="{% url 'olymps:application_parallel_mass_edit' subject.stage.olymp.id subject.stage.id subject.id parallel %}"><button>Редактировать</button></a>

@@ -265,6 +265,7 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
         'applications' : applications,
         'parallels' : list(range(subject.min_class, subject.max_class + 1)) if subject.min_class <= subject.max_class else None,
         'parallel' : parallel,
+        'grade' : subject.grade_set.get(parallel=parallel)
     }
     return render(request, 'olymps/stage/subject/parallel.html', context)
 
@@ -384,7 +385,7 @@ def application_delete(request, olymp_id, stage_id, stage_subject_id, app_id):
     if request.method == 'POST':
         try:
             application.delete()
-            return HttpResponseRedirect(reverse('olymps:stage_subject_delail', args=(olymp_id, stage_id, stage_subject_id)))
+            return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(olymp_id, stage_id, stage_subject_id)))
         except:
             return HttpResponse('Произошла ошибка')
     else:
