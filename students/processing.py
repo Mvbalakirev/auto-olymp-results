@@ -30,8 +30,9 @@ def get_students_update_lists(request, context):
                     num=group_num,
                     liter=group_liter
                 )
-                groups_to_add.append([group_num, group_liter])
-                context['groups_to_add'].append({ 'num' : group_num, 'liter' : group_liter})
+                if (group_num, group_liter) not in groups_to_add:
+                    groups_to_add.append((group_num, group_liter))
+                    context['groups_to_add'].append({ 'num' : group_num, 'liter' : group_liter})
         else:
             gr = None
             group = None

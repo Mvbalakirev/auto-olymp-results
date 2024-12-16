@@ -54,11 +54,11 @@ def add_file_preview(request):
         'students_to_update_group' : [],
         'students_to_add_dob' : [],
     }
-    try:
-        processing.get_students_update_lists(request, context)
-        return render(request, 'students/add_file_preview.html', context)
-    except:
-        return render(request, 'students/add_file_error.html')
+    # try:
+    processing.get_students_update_lists(request, context)
+    return render(request, 'students/add_file_preview.html', context)
+    # except:
+    #     return render(request, 'students/add_file_error.html')
 
 def add_file_submit(request):
     try:
