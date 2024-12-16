@@ -21,7 +21,11 @@ def stages_file(f, olymp):
         try:
             stage = OlympStage.objects.get(olymp=olymp, name=stage_name)
         except:
-            mxnum = OlympStage.objects.filter(olymp=olymp).aggregate(Max('num'))['num__max']
+            qs = OlympStage.objects.filter(olymp=olymp)
+            if len(qs) > 0:
+                mxnum = qs.aggregate(Max('num'))['num__max']
+            else:
+                mxnum = 0
             stage = OlympStage(olymp=olymp, name=stage_name, num=mxnum + 1)
             stage.save()
         for index, row in data.iterrows():

@@ -66,7 +66,6 @@ class Grade(models.Model):
         verbose_name_plural = 'пороговые баллы'
 
 
-
 class Status(models.IntegerChoices):
         WINNER = 1, _('Победитель')
         PRIZER = 2, _('Призёр')
