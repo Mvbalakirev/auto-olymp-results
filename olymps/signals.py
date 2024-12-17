@@ -7,4 +7,4 @@ from students.models import *
 def update_grades(sender, instance, created, **kwargs):
     instance.grade_set.exclude(parallel__lte=instance.max_class, parallel__gte=instance.min_class).delete()
     for paral in range(instance.min_class, instance.max_class + 1) if instance.min_class <= instance.max_class else []:
-            instance.grade_set.get_or_create(parallel=paral)
+        instance.grade_set.get_or_create(parallel=paral)

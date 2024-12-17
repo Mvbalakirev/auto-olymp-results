@@ -5,6 +5,7 @@ from django.forms.models import model_to_dict
 
 from copy import copy, deepcopy
 import pandas as pd
+from . import signals
 
 from students.models import *
 from .models import *
@@ -34,8 +35,8 @@ def stages_file(f, olymp):
                 stage_subject = OlympStageSubject.objects.get(stage=stage, subject=subject)
             except:
                 stage_subject = OlympStageSubject(stage=stage, subject=subject)
-            stage_subject.min_class = row['min_class']
-            stage_subject.max_class = row['max_class']
+            stage_subject.min_class = int(row['min_class'])
+            stage_subject.max_class = int(row['max_class'])
             if row['date'] != '' and row['date'].lower() != 'nan' and row['date'].lower() != 'nat':
                 stage_subject.date = row['date']
             else:
@@ -59,32 +60,32 @@ def get_applications_update_lists(request, context, subject, checks):
             'status' : row['status'],
         }
         
-        if not(item['last_name'] != '' and item['last_name'].lower() != 'nan' and item['last_name'].lower() != 'nat'):
+        if item['last_name'] is None or not(item['last_name'] != '' and item['last_name'].lower() != 'nan' and item['last_name'].lower() != 'nat'):
             item['last_name'] = None
         
-        if not(item['first_name'] != '' and item['first_name'].lower() != 'nan' and item['first_name'].lower() != 'nat'):
+        if item['first_name'] is None or not(item['first_name'] != '' and item['first_name'].lower() != 'nan' and item['first_name'].lower() != 'nat'):
             item['first_name'] = None
 
-        if not(item['middle_name'] != '' and item['middle_name'].lower() != 'nan' and item['middle_name'].lower() != 'nat'):
+        if item['middle_name'] is None or not(item['middle_name'] != '' and item['middle_name'].lower() != 'nan' and item['middle_name'].lower() != 'nat'):
             item['middle_name'] = None
 
-        if not(item['parallel'] != '' and item['parallel'].lower() != 'nan' and item['parallel'].lower() != 'nat'):
+        if item['parallel'] is None or not(item['parallel'] != '' and item['parallel'].lower() != 'nan' and item['parallel'].lower() != 'nat'):
             item['parallel'] = None
         else:
             item['parallel'] = int(float(item['parallel']))
         
-        if not(item['code'] != '' and item['code'].lower() != 'nan' and item['code'].lower() != 'nat'):
+        if item['code'] is None or not(item['code'] != '' and item['code'].lower() != 'nan' and item['code'].lower() != 'nat'):
             item['code'] = None
         
-        if not(item['result'] != '' and item['result'].lower() != 'nan' and item['result'].lower() != 'nat'):
+        if item['result'] is None or not(item['result'] != '' and item['result'].lower() != 'nan' and item['result'].lower() != 'nat'):
             item['result'] = None
         else:
             item['result'] = float(item['result'].replace(',', '.'))
         
-        if not(item['status'] != '' and item['status'].lower() != 'nan' and item['status'].lower() != 'nat'):
+        if item['status'] is None or not(item['status'] != '' and item['status'].lower() != 'nan' and item['status'].lower() != 'nat'):
             item['status'] = None
 
-        if not(item['group'] != '' and item['group'].lower() != 'nan' and item['group'].lower() != 'nat'):
+        if item['group'] is None or not(item['group'] != '' and item['group'].lower() != 'nan' and item['group'].lower() != 'nat'):
             item['group'] = None
         else:
             try:
@@ -98,7 +99,7 @@ def get_applications_update_lists(request, context, subject, checks):
         
         
 
-        if not(item['status'] != '' and item['status'].lower() != 'nan' and item['status'].lower() != 'nat'):
+        if item['status'] is None or not(item['status'] != '' and item['status'].lower() != 'nan' and item['status'].lower() != 'nat'):
             item['status'] = ''
 
         if item['status'] not in Status.labels and item['status'] != '':

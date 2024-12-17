@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from copy import copy, deepcopy
+from django.db.models import Q
 
 from datetime import date
 from django.utils import timezone
@@ -116,12 +118,12 @@ def stage_add(request, olymp_id):
 def stage_add_file(request, olymp_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     if request.method == "POST":
-        # try:
-        f = request.FILES['file']
-        processing.stages_file(f, olymp)
-        return HttpResponseRedirect(reverse('olymps:detail', args=(olymp.id,)))
-        # except:
-        #     return HttpResponse("Произошла ошибка")
+        try:
+            f = request.FILES['file']
+            processing.stages_file(f, olymp)
+            return HttpResponseRedirect(reverse('olymps:detail', args=(olymp.id,)))
+        except:
+            return HttpResponse("Произошла ошибка")
     else:
         olymp = get_object_or_404(Olymp, pk=olymp_id)
         context = {
@@ -265,7 +267,9 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
         'applications' : applications,
         'parallels' : list(range(subject.min_class, subject.max_class + 1)) if subject.min_class <= subject.max_class else None,
         'parallel' : parallel,
-        'grade' : subject.grade_set.get(parallel=parallel)
+        'grade' : subject.grade_set.get(parallel=parallel),
+        'prev_num' : olymp.olympstage_set.filter(num=stage.num - 1).exists(),
+        'prev_year' : Olymp.objects.filter(name=olymp.name, year=olymp.year - 1).exists(),
     }
     return render(request, 'olymps/stage/subject/parallel.html', context)
 
@@ -334,11 +338,11 @@ def application_add_file_submit(request, olymp_id, stage_id, stage_subject_id):
         olymp = get_object_or_404(Olymp, pk=olymp_id)
         stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
         subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
-        # try:
-        processing.save_applications_update_lists(request, subject)
-        return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(subject.stage.olymp.id, subject.stage.id, subject.id)))
-        # except:
-        #     return HttpResponse("Произошла ошибка")
+        try:
+            processing.save_applications_update_lists(request, subject)
+            return HttpResponseRedirect(reverse('olymps:stage_subject_detail', args=(subject.stage.olymp.id, subject.stage.id, subject.id)))
+        except:
+            return HttpResponse("Произошла ошибка")
     else:
         return 
 
@@ -434,3 +438,96 @@ def application_parallel_mass_edit(request, olymp_id, stage_id, stage_subject_id
             'formset' : ApplicationFormset(prefix='app', queryset=subject.application_set.filter(parallel=parallel).order_by('student__last_name', 'student__first_name', 'student__middle_name'))
         }
         return render(request, 'olymps/stage/subject/applications/parallel_mass_edit.html', context)
+
+def application_parallel_grade_win_set(request, olymp_id, stage_id, stage_subject_id, parallel):
+    if request.method == 'POST':
+        olymp = get_object_or_404(Olymp, pk=olymp_id)
+        stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+        subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+        if not(subject.min_class <= parallel and parallel <= subject.max_class):
+            return HttpResponseNotFound()
+        grade = get_object_or_404(Grade, stage_subject=subject, parallel=parallel)
+        apps = subject.application_set.filter(parallel=parallel).exclude(status=Status.DISQUALIFIED)
+        try:
+            grade.gold = float(request.POST['grade-gold'])
+            grade.silver = float(request.POST['grade-silver'])
+            gold = apps.filter(result__gte=grade.gold)
+            silver = apps.filter(result__gte=grade.silver, result__lt=grade.gold)
+            part = apps.filter(result__lt=grade.silver)
+            abcent = apps.filter(result=None)
+            grade.save()
+            gold.update(status=Status.WINNER)
+            silver.update(status=Status.PRIZER)
+            part.update(status=Status.PARTICIPANT)
+            abcent.update(status=Status.ABSENT)
+            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)))
+        except:
+            return HttpResponse('Произошла ошибка')
+    else:
+        return HttpResponse('Некорректный метод запроса')
+
+def application_parallel_add_prev_num(request, olymp_id, stage_id, stage_subject_id, parallel):
+    if request.method == 'POST':
+        olymp = get_object_or_404(Olymp, pk=olymp_id)
+        stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+        subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+        if not(subject.min_class <= parallel and parallel <= subject.max_class):
+            return HttpResponseNotFound()
+        grade = get_object_or_404(Grade, stage_subject=subject, parallel=parallel)
+        try:
+            apps = olymp.olympstage_set.get(num=stage.num - 1).olympstagesubject_set.get(subject=subject.subject).application_set.filter(parallel=parallel).exclude(status=Status.DISQUALIFIED)
+            grade.participate = float(request.POST['grade-participate'])
+            apps = apps.filter(result__gte=grade.participate)
+            for old in apps:
+                if subject.application_set.filter(student=old.student).exists():
+                    continue
+                app = copy(old)
+                app.id = None
+                app.stage_subject = subject
+                app.code = None
+                app.result = None
+                app.status = None
+                app.save()
+            grade.save()
+            
+            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)))
+        except:
+            return HttpResponse('Произошла ошибка')
+    else:
+        return HttpResponse('Некорректный метод запроса')
+
+
+def application_parallel_add_prev_year(request, olymp_id, stage_id, stage_subject_id, parallel):
+    if request.method == 'POST':
+        olymp = get_object_or_404(Olymp, pk=olymp_id)
+        stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+        subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+        if not(subject.min_class <= parallel and parallel <= subject.max_class):
+            return HttpResponseNotFound()
+        try:
+            prevolymp = Olymp.objects.get(name=olymp.name, year=olymp.year - 1)
+            apps = prevolymp.olympstage_set.get(num=stage.num).olympstagesubject_set.get(subject=subject.subject).application_set.all()
+            apps = apps.filter(Q(status=Status.PRIZER) | Q(status=Status.WINNER))
+            for old in apps:
+                if subject.application_set.filter(student=old.student).exists():
+                    continue
+                app = copy(old)
+                if app.student.group:
+                    app.parallel = max(subject.min_class, app.student.group.num)
+                    app.group = str(app.student.group)
+                else:
+                    app.parallel = max(subject.min_class, app.parallel + 1)
+                    app.group = None
+                app.id = None
+                app.stage_subject = subject
+                app.code = None
+                app.result = None
+                app.status = None
+                if app.parallel == parallel:
+                    app.save()
+            
+            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)))
+        except:
+            return HttpResponse('Произошла ошибка')
+    else:
+        return HttpResponse('Некорректный метод запроса')

@@ -37,16 +37,23 @@
                 </tr>
             </table>
             <div onclick="$('#grade-select').slideToggle(500);" class="slide-header"><h3><a href="#">Управление баллами</a></h3></div>
-            <div id="grade-select">
-                <form method="post" action="#">
-                    Добавить участников предыдущего этапа, набравших не менее
-                    <input type="number" step="any" name="grade-participant" class="num-inp" value="{{grade.participate|unlocalize|default_if_none:""}}" required/>
-                    баллов
-                    <br />
-                    <button>Добавить</button>
+            <div id="grade-select" style="display: none;">
+                <form method="post" action="{% url 'olymps:application_parallel_add_prev_year' subject.stage.olymp.id subject.stage.id subject.id parallel %}">
+                    {% csrf_token %}
+                    Добавить победителей и призёров предыдущего года
+                    <button {% if not prev_year %}disabled title="Нет олимпиады с таким названием в предыдущем году!"{% endif %}>Добавить</button>
                 </form>
                 <br />
-                <form method="post" action="#">
+                <form method="post" action="{% url 'olymps:application_parallel_add_prev_num' subject.stage.olymp.id subject.stage.id subject.id parallel %}">
+                    {% csrf_token %}
+                    Добавить участников предыдущего этапа, набравших не менее
+                    <input {% if not prev_num %}disabled title="Это первый этап!"{% endif %}type="number" step="any" name="grade-participate" class="num-inp" value="{{grade.participate|unlocalize|default_if_none:""}}" required/>
+                    баллов
+                    <button {% if not prev_num %}disabled title="Это первый этап!"{% endif %}>Добавить</button>
+                </form>
+                <br />
+                <form method="post" action="{% url 'olymps:application_parallel_grade_win_set' subject.stage.olymp.id subject.stage.id subject.id parallel %}">
+                    {% csrf_token %}
                     Сделать победителями от
                     <input type="number" step="any" name="grade-gold" class="num-inp" value="{{grade.gold|unlocalize|default_if_none:""}}" required />
                     баллов,

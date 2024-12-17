@@ -30,4 +30,7 @@ urlpatterns = [
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/app-<int:app_id>/delete/', views.application_delete, name='application_delete'),
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/mass_edit/', views.application_mass_edit, name='application_mass_edit'),
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/<int:parallel>/mass_edit/', views.application_parallel_mass_edit, name='application_parallel_mass_edit'),
+    path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/<int:parallel>/grade_win_set/', views.application_parallel_grade_win_set, name='application_parallel_grade_win_set'),
+    path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/<int:parallel>/add_prev_num/', views.application_parallel_add_prev_num, name='application_parallel_add_prev_num'),
+    path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/<int:parallel>/add_prev_year/', views.application_parallel_add_prev_year, name='application_parallel_add_prev_year'),
 ]
