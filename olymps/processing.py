@@ -2,7 +2,6 @@ from datetime import date
 from django.utils import timezone
 from django.db.models import Max
 from django.forms.models import model_to_dict
-import openpyxl
 
 from copy import copy, deepcopy
 import pandas as pd
