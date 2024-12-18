@@ -23,7 +23,7 @@
 
         <main>
             <h2 class="head_title">{{ subject }} | Загрузка результатов</h2>
-            <p>Загрузите заполненный <a href="#">шаблон</a> ниже:</p> 
+            <p>Загрузите заполненный <a href="{% static 'olymps/template_files/Участники шаблон.xlsx' %}" download>шаблон</a> ниже:</p> 
             <form action="#" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input name="file" type="file" accept=".xlsx,.xls,.csv" required />

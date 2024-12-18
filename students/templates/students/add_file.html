@@ -23,7 +23,7 @@
 
         <main>
             <h2 class="head_title">Добавление учеников</h2>
-            <p>Загрузите заполненный <a href="#">шаблон</a> ниже:</p> 
+            <p>Загрузите заполненный <a href="{% static 'students/template_files/Ученики шаблон.xlsx' %}" download>шаблон</a> ниже:</p> 
             <form action="{% url 'students:add_file_preview' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input name="uploaded_students" type="file" accept=".xlsx,.xls" required />

@@ -8,6 +8,7 @@ from datetime import date
 from django.utils import timezone
 
 import pandas as pd
+from transliterate import translit
 
 from students.models import *
 from .models import *
@@ -246,7 +247,7 @@ def stage_subject_detail(request, olymp_id, stage_id, stage_subject_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
     subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
-    applications = subject.application_set.all().order_by('student__last_name', 'student__first_name', 'student__middle_name')
+    applications = subject.application_set.all().order_by('parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
     context = {
         'subject' : subject,
         'applications' : applications,
@@ -272,6 +273,48 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
         'prev_year' : Olymp.objects.filter(name=olymp.name, year=olymp.year - 1).exists(),
     }
     return render(request, 'olymps/stage/subject/parallel.html', context)
+
+def stage_subject_get_file(request, olymp_id, stage_id, stage_subject_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    applications = subject.application_set.all().order_by('parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
+    data = {}
+    data['Все'] = []
+    for app in applications:
+        data['Все'].append({
+            'id' : app.id,
+            'last_name' : app.student.last_name,
+            'first_name' : app.student.first_name,
+            'middle_name' : app.student.middle_name,
+            'code' : app.code,
+            'parallel' : app.parallel,
+            'group' : app.group,
+            'result' : app.result,
+            'status' : app.get_status_display(),
+        })
+    for parallel in range(subject.min_class, subject.max_class + 1):
+        sheetname = str(parallel) + ' класс'
+        data[sheetname] = []
+        applications_parallel = applications.filter(parallel=parallel)
+        for app in applications_parallel:
+            data[sheetname].append({
+                'last_name' : app.student.last_name,
+                'first_name' : app.student.first_name,
+                'middle_name' : app.student.middle_name,
+                'code' : app.code,
+                'parallel' : app.parallel,
+                'group' : app.group,
+                'result' : app.result,
+                'status' : app.get_status_display(),
+            })
+
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = f"attachment; filename={translit(subject.subject.name, 'ru', reversed=True)}.xlsx"
+    processing.create_excel(data, response)
+    
+    return response
+
 
 def application_add(request, olymp_id, stage_id, stage_subject_id):
     if request.method == "POST":
