@@ -22,6 +22,9 @@
         </header>
 
         <main>
+            <a href="{% url 'olymps:stage_detail' subject.stage.olymp.id subject.stage.id %}"><button>Назад</button></a>
+            <br />
+            <br />
             <a href="{% url 'olymps:stage_subject_edit' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Редактировать</button></a>
             <h2 class="head_title">{{ subject }}</h2>
             <h3 class="head_title">{{ subject.stage.name }}</h3>
