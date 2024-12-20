@@ -88,14 +88,14 @@ def get_students_update_lists(request, context):
                 (data['middle_name'] == (student.middle_name if student.middle_name else '')) &
                 (data['group'] == (str(student.group) if student.group else ''))
             ]
-        ) == 0 and (student.date_of_birth == None or len(
+        ) == 0 and len(
             data[
                 (data['last_name'] == student.last_name) &
                 (data['first_name'] == student.first_name) &
                 (data['middle_name'] == (student.middle_name if student.middle_name else '')) &
                 (data['date_of_birth'] == (str(student.date_of_birth) if student.date_of_birth else ''))
             ]
-        ) == 0):
+        ) == 0:
             students_to_delete.append(student.id)
             context['students_to_delete'].append({'id' : student.id,
                                                   'last_name' : student.last_name,
