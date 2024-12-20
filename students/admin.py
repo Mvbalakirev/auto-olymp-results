@@ -21,9 +21,15 @@ def to_next_year(modeladmin, request, queryset):
         group.num += 1
         group.save()
 
+@admin.action(description="Перевести на предыдущий год")
+def to_prev_year(modeladmin, request, queryset):
+    for group in queryset:
+        group.num -= 1
+        group.save()
+
 class GroupAdmin(admin.ModelAdmin):
     search_fields = ['num', 'liter']
-    actions = [to_next_year]
+    actions = [to_next_year, to_prev_year]
     
 
 admin.site.register(Group, GroupAdmin)
