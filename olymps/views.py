@@ -559,7 +559,7 @@ def application_parallel_add_prev_year(request, olymp_id, stage_id, stage_subjec
                     app.parallel = max(subject.min_class, app.student.group.num)
                     app.group = str(app.student.group)
                 else:
-                    app.parallel = max(subject.min_class, app.parallel + 1)
+                    app.parallel = min(max(subject.min_class, app.parallel + 1), subject.max_class)
                     app.group = None
                 app.id = None
                 app.stage_subject = subject

@@ -101,7 +101,8 @@ def get_applications_update_lists(request, context, subject, checks):
 
         if item['status'] is None or not(item['status'] != '' and item['status'].lower() != 'nan' and item['status'].lower() != 'nat'):
             item['status'] = ''
-
+        item['status'] = item['status'].capitalize()
+        item['status'] = item['status'].replace('Призер', 'Призёр')
         if item['status'] not in Status.labels and item['status'] != '':
             item['comment'] = 'Некорректный статус'
             context['errors'].append(item)
@@ -189,10 +190,14 @@ def get_applications_update_lists(request, context, subject, checks):
 
 
 def save_applications_update_lists(request, subject):
-    to_add = request.session.get('to_add')
-    to_update = request.session.get('to_update')
-    request.session.pop('to_add')
-    request.session.pop('to_update')
+    to_add = []
+    to_update = []
+    if 'to_add' in request.session:
+        to_add = request.session.get('to_add')
+        request.session.pop('to_add')
+    if 'to_update' in request.session:
+        to_update = request.session.get('to_update')
+        request.session.pop('to_update')
     
     if 'is_add' in request.POST:
         for data in to_add:
