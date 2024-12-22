@@ -44,6 +44,7 @@
             <a href="{% url 'olymps:application_add_file' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Загрузить из файла</button></a>
             <hr />
             <a href="{% url 'olymps:stage_subject_get_file' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Экспорт в .xlsx</button></a>
+            <a href="{% url 'olymps:export_for_application' subject.stage.olymp.id subject.stage.id subject.id %}"><button>Экспорт для заявки</button></a>
             <br />
             <br />
             {% if applications %}
