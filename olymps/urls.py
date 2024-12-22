@@ -24,6 +24,8 @@ urlpatterns = [
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/<int:parallel>/', views.stage_subject_parallel, name='stage_subject_parallel'),
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/get_file', views.stage_subject_get_file, name='stage_subject_get_file'),
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/export_for_application', views.export_for_application, name='export_for_application'),
+    path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/export_participants', views.export_participants, name='export_participants'),
+    path('<int:olymp_id>/<int:stage_id>/export_participants', views.export_participants, name='export_participants'),
 
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/application_add/', views.application_add, name='application_add'),
     path('<int:olymp_id>/<int:stage_id>/<int:stage_subject_id>/application_add_file/', views.application_add_file, name='application_add_file'),

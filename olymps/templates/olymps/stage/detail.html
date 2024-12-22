@@ -27,9 +27,13 @@
             <br />
             <a href="{% url 'olymps:stage_edit' stage.olymp.id stage.id %}"><button>Редактировать</button></a>
             <a href="{% url 'olymps:stage_subject_add' stage.olymp.id stage.id %}"><button>Добавить предмет</button></a>
+            
             <h2 class="head_title">{{ stage.olymp }}</h2>
             <h3 class="head_title">{{ stage.name }}</h3>
             <h3>Предметы</h3>
+            <a href="{% url 'olymps:export_participants' stage.olymp.id stage.id %}"><button>Экспорт всех участников</button></a>
+            <br />
+            <br />
             {% if stage_subjects %}
             <table class="list">
                 <thead>
