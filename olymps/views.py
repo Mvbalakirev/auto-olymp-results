@@ -283,15 +283,14 @@ def stage_subject_get_file(request, olymp_id, stage_id, stage_subject_id):
     data['Все'] = []
     for app in applications:
         data['Все'].append({
-            'id' : app.id,
-            'last_name' : app.student.last_name,
-            'first_name' : app.student.first_name,
-            'middle_name' : app.student.middle_name,
-            'code' : app.code,
-            'parallel' : app.parallel,
-            'group' : app.group,
-            'result' : app.result,
-            'status' : app.get_status_display(),
+            'Фамилия' : app.student.last_name,
+            'Имя' : app.student.first_name,
+            'Отчество' : app.student.middle_name,
+            'Код' : app.code,
+            'Параллель' : app.parallel,
+            'Класс' : app.group,
+            'Баллы' : app.result,
+            'Статус' : app.get_status_display(),
         })
     for parallel in range(subject.min_class, subject.max_class + 1):
         sheetname = str(parallel) + ' класс'
@@ -299,18 +298,33 @@ def stage_subject_get_file(request, olymp_id, stage_id, stage_subject_id):
         applications_parallel = applications.filter(parallel=parallel)
         for app in applications_parallel:
             data[sheetname].append({
-                'last_name' : app.student.last_name,
-                'first_name' : app.student.first_name,
-                'middle_name' : app.student.middle_name,
-                'code' : app.code,
-                'parallel' : app.parallel,
-                'group' : app.group,
-                'result' : app.result,
-                'status' : app.get_status_display(),
+                'Фамилия' : app.student.last_name,
+                'Имя' : app.student.first_name,
+                'Отчество' : app.student.middle_name,
+                'Код' : app.code,
+                'Параллель' : app.parallel,
+                'Класс' : app.group,
+                'Баллы' : app.result,
+                'Статус' : app.get_status_display(),
             })
+def export_for_application(request, olymp_id, stage_id, stage_subject_id):
+    olymp = get_object_or_404(Olymp, pk=olymp_id)
+    stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
+    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+    applications = subject.application_set.all().order_by('parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
+    data = {}
+    data['Муниципальный'] = []
+    for app in applications:
+        data['Муниципальный'].append({
+            'Фамилия' : app.student.last_name,
+            'Имя' : app.student.first_name,
+            'Отчество' : app.student.middle_name,
+            'Параллель' : app.parallel,
+            'ОУ' : 'ОГАОУ "Шуховский лицей"'
+        })
 
     response = HttpResponse(content_type='application/vnd.ms-excel')
-    response['Content-Disposition'] = f"attachment; filename={translit(subject.subject.name, 'ru', reversed=True)}.xlsx"
+    response['Content-Disposition'] = f"attachment; filename={translit(subject.subject.name, 'ru', reversed=True)}_application.xlsx"
     processing.create_excel(data, response)
     
     return response

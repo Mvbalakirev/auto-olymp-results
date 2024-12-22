@@ -219,15 +219,6 @@ def save_applications_update_lists(request, subject):
 def create_excel(data_sheets, filename='export.xlsx'):
     excel_writer = pd.ExcelWriter(filename, engine='xlsxwriter')
     for sheetname, data in data_sheets.items():
-        df = pd.DataFrame(data).rename(columns={
-            'last_name' : 'Фамилия',
-            'first_name' :'Имя',
-            'middle_name' : 'Отчество',
-            'code' : 'Код',
-            'parallel' : 'Параллель',
-            'group' : 'Класс',
-            'result' : 'Баллы',
-            'status' : 'Статус',
-        })
+        df = pd.DataFrame(data, index=pd.Series(range(1, len(data) + 1)))
         df.to_excel(excel_writer, sheet_name=sheetname)
     excel_writer.close()
