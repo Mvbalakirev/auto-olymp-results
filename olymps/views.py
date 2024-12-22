@@ -307,6 +307,14 @@ def stage_subject_get_file(request, olymp_id, stage_id, stage_subject_id):
                 'Баллы' : app.result,
                 'Статус' : app.get_status_display(),
             })
+
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = f"attachment; filename={translit(subject.subject.name, 'ru', reversed=True)}_application.xlsx"
+    processing.create_excel(data, response)
+    
+    return response
+
+
 def export_for_application(request, olymp_id, stage_id, stage_subject_id):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
