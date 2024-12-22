@@ -17,13 +17,13 @@ class StudentAdmin(admin.ModelAdmin):
 
 @admin.action(description="Перевести на следующий год")
 def to_next_year(modeladmin, request, queryset):
-    for group in queryset:
+    for group in queryset.order_by('-num'):
         group.num += 1
         group.save()
 
 @admin.action(description="Перевести на предыдущий год")
 def to_prev_year(modeladmin, request, queryset):
-    for group in queryset:
+    for group in queryset.order_by('num'):
         group.num -= 1
         group.save()
 
