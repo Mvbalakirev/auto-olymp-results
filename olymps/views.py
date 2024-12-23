@@ -285,7 +285,8 @@ def export_results(request, olymp_id, stage_id, stage_subject_id=None):
     data = {}
     data['Все'] = []
     for app in applications:
-        data['Все'].append({
+        if stage_subject_id is not None:
+            data['Все'].append({
             'Фамилия' : app.student.last_name,
             'Имя' : app.student.first_name,
             'Отчество' : app.student.middle_name,
@@ -295,8 +296,18 @@ def export_results(request, olymp_id, stage_id, stage_subject_id=None):
             'Баллы' : app.result,
             'Статус' : app.get_status_display(),
         })
-        if stage_subject_id is not None:
-            data['Все'][-1]['Предмет'] = app.stage_subject.subject.name
+        else:
+            data['Все'].append({
+                'Предмет' : app.stage_subject.subject.name,
+                'Фамилия' : app.student.last_name,
+                'Имя' : app.student.first_name,
+                'Отчество' : app.student.middle_name,
+                'Код' : app.code,
+                'Параллель' : app.parallel,
+                'Класс' : app.group,
+                'Баллы' : app.result,
+                'Статус' : app.get_status_display(),
+            })
         
     if stage_subject_id is not None:
         for parallel in range(subject.min_class, subject.max_class + 1):
@@ -356,17 +367,25 @@ def export_participants(request, olymp_id, stage_id, stage_subject_id=None):
     data = {}
     data['Все'] = []
     for app in applications:
-        data['Все'].append({
-            'Предмет' : app.stage_subject.subject.name,
-            'Фамилия' : app.student.last_name,
-            'Имя' : app.student.first_name,
-            'Отчество' : app.student.middle_name,
-            'Параллель' : app.group,
-            'Класс' : app.group,
-            'Дата' : app.stage_subject.date,
-        })
         if stage_subject_id is not None:
-            data['Все'][-1]['Предмет'] = app.stage_subject.subject.name
+            data['Все'].append({
+                'Фамилия' : app.student.last_name,
+                'Имя' : app.student.first_name,
+                'Отчество' : app.student.middle_name,
+                'Параллель' : app.parallel,
+                'Класс' : app.group,
+                'Дата' : app.stage_subject.date,
+            })
+        else:
+            data['Все'].append({
+                'Предмет' : app.stage_subject.subject.name,
+                'Фамилия' : app.student.last_name,
+                'Имя' : app.student.first_name,
+                'Отчество' : app.student.middle_name,
+                'Параллель' : app.group,
+                'Класс' : app.group,
+                'Дата' : app.stage_subject.date,
+            })
 
     response = HttpResponse(content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = f"attachment; filename={translit(stage.name, 'ru', reversed=True)}_participants.xlsx"
