@@ -274,11 +274,14 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
     }
     return render(request, 'olymps/stage/subject/parallel.html', context)
 
-def stage_subject_get_file(request, olymp_id, stage_id, stage_subject_id):
+def export_results(request, olymp_id, stage_id, stage_subject_id=None):
     olymp = get_object_or_404(Olymp, pk=olymp_id)
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
-    subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
-    applications = subject.application_set.all().order_by('parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
+    if stage_subject_id is not None:
+        subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
+        applications = subject.application_set.all().order_by('parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
+    else:
+        applications = Application.objects.filter(stage_subject__stage=stage).order_by('stage_subject__subject__name', 'parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
     data = {}
     data['Все'] = []
     for app in applications:
@@ -292,22 +295,23 @@ def stage_subject_get_file(request, olymp_id, stage_id, stage_subject_id):
             'Баллы' : app.result,
             'Статус' : app.get_status_display(),
         })
-    for parallel in range(subject.min_class, subject.max_class + 1):
-        sheetname = str(parallel) + ' класс'
-        data[sheetname] = []
-        applications_parallel = applications.filter(parallel=parallel)
-        for app in applications_parallel:
-            data[sheetname].append({
-                'Фамилия' : app.student.last_name,
-                'Имя' : app.student.first_name,
-                'Отчество' : app.student.middle_name,
-                'Код' : app.code,
-                'Параллель' : app.parallel,
-                'Класс' : app.group,
-                'Баллы' : app.result,
-                'Статус' : app.get_status_display(),
-            })
-
+    if stage_subject_id is not None:
+        for parallel in range(subject.min_class, subject.max_class + 1):
+            sheetname = str(parallel) + ' класс'
+            data[sheetname] = []
+            applications_parallel = applications.filter(parallel=parallel)
+            for app in applications_parallel:
+                data[sheetname].append({
+                    'Фамилия' : app.student.last_name,
+                    'Имя' : app.student.first_name,
+                    'Отчество' : app.student.middle_name,
+                    'Код' : app.code,
+                    'Параллель' : app.parallel,
+                    'Класс' : app.group,
+                    'Баллы' : app.result,
+                    'Статус' : app.get_status_display(),
+                })
+    fn = translit(subject.subject.name, 'ru', reversed=True) if stage_subject_id is not None else translit(str(stage), 'ru', reversed=True)
     response = HttpResponse(content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = f"attachment; filename={translit(subject.subject.name, 'ru', reversed=True)}.xlsx"
     processing.create_excel(data, response)
@@ -354,6 +358,7 @@ def export_participants(request, olymp_id, stage_id, stage_subject_id=None):
             'Фамилия' : app.student.last_name,
             'Имя' : app.student.first_name,
             'Отчество' : app.student.middle_name,
+            'Параллель' : app.group,
             'Класс' : app.group,
             'Дата' : app.stage_subject.date,
         })
