@@ -32,6 +32,7 @@
             <h3 class="head_title">{{ stage.name }}</h3>
             <h3>Предметы</h3>
             <a href="{% url 'olymps:export_participants' stage.olymp.id stage.id %}"><button>Экспорт всех участников</button></a>
+            <a href="{% url 'olymps:export_results' stage.olymp.id stage.id %}"><button>Экспорт всех результатов</button></a>
             <br />
             <br />
             {% if stage_subjects %}

@@ -295,6 +295,9 @@ def export_results(request, olymp_id, stage_id, stage_subject_id=None):
             'Баллы' : app.result,
             'Статус' : app.get_status_display(),
         })
+        if stage_subject_id is not None:
+            data['Все'][-1]['Предмет'] = app.stage_subject.subject.name
+        
     if stage_subject_id is not None:
         for parallel in range(subject.min_class, subject.max_class + 1):
             sheetname = str(parallel) + ' класс'
@@ -311,9 +314,9 @@ def export_results(request, olymp_id, stage_id, stage_subject_id=None):
                     'Баллы' : app.result,
                     'Статус' : app.get_status_display(),
                 })
-    fn = translit(subject.subject.name, 'ru', reversed=True) if stage_subject_id is not None else translit(str(stage), 'ru', reversed=True)
+    fn = translit(subject.subject.name, 'ru', reversed=True) if stage_subject_id is not None else translit(stage.name, 'ru', reversed=True)
     response = HttpResponse(content_type='application/vnd.ms-excel')
-    response['Content-Disposition'] = f"attachment; filename={translit(subject.subject.name, 'ru', reversed=True)}.xlsx"
+    response['Content-Disposition'] = f"attachment; filename={fn}.xlsx"
     processing.create_excel(data, response)
     
     return response
@@ -362,6 +365,8 @@ def export_participants(request, olymp_id, stage_id, stage_subject_id=None):
             'Класс' : app.group,
             'Дата' : app.stage_subject.date,
         })
+        if stage_subject_id is not None:
+            data['Все'][-1]['Предмет'] = app.stage_subject.subject.name
 
     response = HttpResponse(content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = f"attachment; filename={translit(stage.name, 'ru', reversed=True)}_participants.xlsx"
