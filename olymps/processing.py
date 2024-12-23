@@ -72,7 +72,12 @@ def get_applications_update_lists(request, context, subject, checks):
         if item['parallel'] is None or not(item['parallel'] != '' and item['parallel'].lower() != 'nan' and item['parallel'].lower() != 'nat'):
             item['parallel'] = None
         else:
-            item['parallel'] = int(float(item['parallel']))
+            try:
+                item['parallel'] = int(float(item['parallel']))
+            except:
+                item['comment'] = 'Некорректно указана параллель'
+                context['errors'].append(item)
+                continue
         
         if item['code'] is None or not(item['code'] != '' and item['code'].lower() != 'nan' and item['code'].lower() != 'nat'):
             item['code'] = None
@@ -80,7 +85,12 @@ def get_applications_update_lists(request, context, subject, checks):
         if item['result'] is None or not(item['result'] != '' and item['result'].lower() != 'nan' and item['result'].lower() != 'nat'):
             item['result'] = None
         else:
-            item['result'] = float(item['result'].replace(',', '.'))
+            try:
+                item['result'] = float(item['result'].replace(',', '.'))
+            except:
+                item['comment'] = 'Некорректно указаны баллы'
+                context['errors'].append(item)
+                continue
         
         if item['status'] is None or not(item['status'] != '' and item['status'].lower() != 'nan' and item['status'].lower() != 'nat'):
             item['status'] = None

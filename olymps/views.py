@@ -406,16 +406,16 @@ def application_add_file(request, olymp_id, stage_id, stage_subject_id):
             'no_change' : [],
             'errors' : [],
         }
-        # try:
-        checks = {
-            'middle_name' : 'middle_name' in request.POST,
-            'group' : 'group' in request.POST,
-            'alumnus' : 'alumnus' in request.POST,
-        }
-        processing.get_applications_update_lists(request, context, subject, checks)
-        return render(request, 'olymps/stage/subject/applications/add_file_preview.html', context)
-        # except:
-        #     return HttpResponse("Произошла ошибка")
+        try:
+            checks = {
+                'middle_name' : 'middle_name' in request.POST,
+                'group' : 'group' in request.POST,
+                'alumnus' : 'alumnus' in request.POST,
+            }
+            processing.get_applications_update_lists(request, context, subject, checks)
+            return render(request, 'olymps/stage/subject/applications/add_file_preview.html', context)
+        except:
+            return HttpResponse("Произошла ошибка")
     else:
         context = {
             'olymp' : olymp,
