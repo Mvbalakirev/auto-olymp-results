@@ -361,9 +361,9 @@ def export_participants(request, olymp_id, stage_id, stage_subject_id=None):
     stage = get_object_or_404(OlympStage, olymp=olymp, id=stage_id)
     if stage_subject_id is not None:
         subject = get_object_or_404(OlympStageSubject, stage=stage, id=stage_subject_id)
-        applications = subject.application_set.all().order_by('parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
+        applications = subject.application_set.all().order_by('parallel', 'group__num', 'group__liter', 'student__last_name', 'student__first_name', 'student__middle_name')
     else:
-        applications = Application.objects.filter(stage_subject__stage=stage).order_by('stage_subject__subject__name', 'parallel', 'status', '-result', 'group', 'student__last_name', 'student__first_name', 'student__middle_name')
+        applications = Application.objects.filter(stage_subject__stage=stage).order_by('stage_subject__subject__name', 'parallel', 'group__num', 'group__liter', 'student__last_name', 'student__first_name', 'student__middle_name')
     data = {}
     data['Все'] = []
     for app in applications:
