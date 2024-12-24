@@ -632,6 +632,8 @@ def application_parallel_add_prev_year(request, olymp_id, stage_id, stage_subjec
             for old in apps:
                 if subject.application_set.filter(student=old.student).exists():
                     continue
+                if Application.objects.filter(stage_subject__stage__olymp=olymp, student=old.student, status=Status.DISQUALIFIED).exists():
+                    continue
                 app = copy(old)
                 if app.student.group:
                     app.parallel = max(subject.min_class, app.student.group.num)
