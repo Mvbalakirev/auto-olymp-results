@@ -40,7 +40,7 @@
                 </tr>
             </table>
             <div onclick="$('#grade-select').slideToggle(500);" class="slide-header"><h3><a href="#">Управление баллами</a></h3></div>
-            <div id="grade-select" style="display: none;">
+            <div id="grade-select" {% if not is_open_grade %}style="display: none;"{% endif %}>
                 <form method="post" action="{% url 'olymps:application_parallel_add_prev_year' subject.stage.olymp.id subject.stage.id subject.id parallel %}">
                     {% csrf_token %}
                     Добавить победителей и призёров предыдущего года

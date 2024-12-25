@@ -271,6 +271,7 @@ def stage_subject_parallel(request, olymp_id, stage_id, stage_subject_id, parall
         'grade' : subject.grade_set.get(parallel=parallel),
         'prev_num' : olymp.olympstage_set.filter(num=stage.num - 1).exists(),
         'prev_year' : Olymp.objects.filter(name=olymp.name, year=olymp.year - 1).exists(),
+        'is_open_grade' : 'grade' in request.GET,
     }
     return render(request, 'olymps/stage/subject/parallel.html', context)
 
@@ -581,7 +582,7 @@ def application_parallel_grade_win_set(request, olymp_id, stage_id, stage_subjec
             silver.update(status=Status.PRIZER)
             part.update(status=Status.PARTICIPANT)
             abcent.update(status=Status.ABSENT)
-            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)))
+            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)) + "?grade=1")
         except:
             return HttpResponse('Произошла ошибка')
     else:
@@ -611,7 +612,7 @@ def application_parallel_add_prev_num(request, olymp_id, stage_id, stage_subject
                 app.save()
             grade.save()
             
-            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)))
+            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)) + "?grade=1")
         except:
             return HttpResponse('Произошла ошибка')
     else:
@@ -649,7 +650,7 @@ def application_parallel_add_prev_year(request, olymp_id, stage_id, stage_subjec
                 if app.parallel == parallel:
                     app.save()
             
-            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)))
+            return HttpResponseRedirect(reverse('olymps:stage_subject_parallel', args=(olymp_id, stage_id, stage_subject_id, parallel)) + "?grade=1")
         except:
             return HttpResponse('Произошла ошибка')
     else:
